@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Users — SVE Admin</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="../images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-brand">
+      <img src="../images/logo.png" alt="SVE" onerror="this.style.display='none'" />
+      <div class="txt"><span class="n">SVE Admin</span><span class="s">CONTROL PANEL</span></div>
+    </div>
+    <nav class="admin-nav">
+      <a href="dashboard.html"><span class="ic">📊</span> Dashboard</a>
+      <a href="applications.html"><span class="ic">📝</span> Applications</a>
+      <a href="users.html"><span class="ic">👥</span> Users</a>
+      <a href="products.html"><span class="ic">📦</span> Products</a>
+      <a href="orders.html"><span class="ic">🛒</span> Orders</a>
+      <a href="leads.html"><span class="ic">📞</span> Leads</a>
+      <a href="analytics.html"><span class="ic">📈</span> Analytics</a>
+      <a href="settings.html"><span class="ic">⚙️</span> Settings</a>
+    </nav>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-topbar-left">
+        <button class="admin-hamburger" id="adminHamburger">☰</button>
+        <span class="admin-page-title">Users</span>
+      </div>
+      <div class="admin-topbar-right">
+        <div class="admin-user"><span class="n">Admin</span><span class="e" id="adminEmail">…</span></div>
+        <button class="btn-outline btn-sm" data-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="toolbar" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+        <input type="text" id="searchBox" placeholder="Search name / email / phone…" style="flex:1;min-width:200px;padding:10px 14px;background:#0f172a;border:1.5px solid #334155;border-radius:8px;color:#e2e8f0;" />
+        <button class="btn-outline btn-sm" id="refreshBtn">🔄 Refresh</button>
+      </div>
+
+      <div class="panel">
+        <div class="panel-body p-0" id="usersBody">
+          <div class="loading-block"><span class="spinner"></span> Loading…</div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="../js/firebase-config.js"></script>
+<script src="js/admin-auth.js"></script>
+<script src="js/admin-users.js"></script>
+</body>
+</html>

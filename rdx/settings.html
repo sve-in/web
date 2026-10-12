@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Settings — SVE Admin</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="../images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-brand">
+      <img src="../images/logo.png" alt="SVE" onerror="this.style.display='none'" />
+      <div class="txt"><span class="n">SVE Admin</span><span class="s">CONTROL PANEL</span></div>
+    </div>
+    <nav class="admin-nav">
+      <a href="dashboard.html"><span class="ic">📊</span> Dashboard</a>
+      <a href="applications.html"><span class="ic">📝</span> Applications</a>
+      <a href="users.html"><span class="ic">👥</span> Users</a>
+      <a href="products.html"><span class="ic">📦</span> Products</a>
+      <a href="orders.html"><span class="ic">🛒</span> Orders</a>
+      <a href="leads.html"><span class="ic">📞</span> Leads</a>
+      <a href="analytics.html"><span class="ic">📈</span> Analytics</a>
+      <a href="settings.html"><span class="ic">⚙️</span> Settings</a>
+    </nav>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-topbar-left">
+        <button class="admin-hamburger" id="adminHamburger">☰</button>
+        <span class="admin-page-title">Settings</span>
+      </div>
+      <div class="admin-topbar-right"><button class="btn-outline btn-sm" data-logout>Logout</button></div>
+    </header>
+
+    <main class="admin-content">
+      <div class="panel" style="max-width:720px;">
+        <div class="panel-head"><h3>Company Info</h3></div>
+        <div class="panel-body">
+          <form id="settingsForm">
+            <div class="field" style="margin-bottom:14px;"><label>Company Name</label><input type="text" id="sName" /></div>
+            <div class="field" style="margin-bottom:14px;"><label>Address</label><input type="text" id="sAddress" /></div>
+            <div class="field" style="margin-bottom:14px;"><label>Phone</label><input type="tel" id="sPhone" /></div>
+            <div class="field" style="margin-bottom:14px;"><label>Email</label><input type="email" id="sEmail" /></div>
+            <div class="field" style="margin-bottom:14px;"><label>WhatsApp Number</label><input type="tel" id="sWhatsapp" /></div>
+            <div class="field" style="margin-bottom:14px;"><label>GST Number</label><input type="text" id="sGst" /></div>
+            <div id="settingsErr" class="alert alert-error" hidden></div>
+            <div id="settingsOk" class="alert alert-success" hidden></div>
+            <button type="submit" class="btn-primary" id="saveSettingsBtn">Save Settings</button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="../js/firebase-config.js"></script>
+<script src="js/admin-auth.js"></script>
+<script src="js/admin-settings.js"></script>
+</body>
+</html>

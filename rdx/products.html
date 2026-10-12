@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Products — SVE Admin</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="../images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/admin.css" />
+<style>
+  .prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+  .prod-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; transition: var(--transition); }
+  .prod-card:hover { border-color: #3b82f6; transform: translateY(-2px); }
+  .prod-card h4 { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .prod-card .sub { font-size: .78rem; color: #64748b; margin-bottom: 10px; }
+  .prod-card .price { font-size: 1.2rem; font-weight: 800; color: #60a5fa; margin-bottom: 4px; }
+  .prod-card .stock { font-size: .82rem; color: #94a3b8; margin-bottom: 14px; }
+  .prod-card .stock .low { color: #fca5a5; font-weight: 700; }
+  .prod-card .actions { display: flex; gap: 6px; }
+  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .modal-grid .full { grid-column: 1 / -1; }
+  @media(max-width:600px){ .modal-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-brand">
+      <img src="../images/logo.png" alt="SVE" onerror="this.style.display='none'" />
+      <div class="txt"><span class="n">SVE Admin</span><span class="s">CONTROL PANEL</span></div>
+    </div>
+    <nav class="admin-nav">
+      <a href="dashboard.html"><span class="ic">📊</span> Dashboard</a>
+      <a href="applications.html"><span class="ic">📝</span> Applications</a>
+      <a href="users.html"><span class="ic">👥</span> Users</a>
+      <a href="products.html"><span class="ic">📦</span> Products</a>
+      <a href="orders.html"><span class="ic">🛒</span> Orders</a>
+      <a href="leads.html"><span class="ic">📞</span> Leads</a>
+      <a href="analytics.html"><span class="ic">📈</span> Analytics</a>
+      <a href="settings.html"><span class="ic">⚙️</span> Settings</a>
+    </nav>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-topbar-left">
+        <button class="admin-hamburger" id="adminHamburger">☰</button>
+        <span class="admin-page-title">Products</span>
+      </div>
+      <div class="admin-topbar-right">
+        <button class="btn-primary btn-sm" id="addBtn">+ Add Product</button>
+        <button class="btn-outline btn-sm" data-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="prod-grid" id="prodGrid">
+        <div class="loading-block"><span class="spinner"></span> Loading…</div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="prodModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Add Product</h3>
+      <button class="modal-close" id="closeModal">✕</button>
+    </div>
+    <form id="prodForm" novalidate>
+      <input type="hidden" id="prodId" />
+      <div class="modal-grid">
+        <div class="field"><label>Name (EN) *</label><input type="text" id="pName" required /></div>
+        <div class="field"><label>Name (HI)</label><input type="text" id="pNameHi" /></div>
+        <div class="field"><label>Price (₹) *</label><input type="number" id="pPrice" min="0" required /></div>
+        <div class="field"><label>Unit</label><input type="text" id="pUnit" placeholder="e.g. 1kg" /></div>
+        <div class="field"><label>Stock</label><input type="number" id="pStock" min="0" value="0" /></div>
+        <div class="field"><label>Category</label><input type="text" id="pCategory" placeholder="e.g. detergent" /></div>
+        <div class="field full"><label>Image URL</label><input type="url" id="pImage" placeholder="https://…" /></div>
+        <div class="field full"><label>Tagline</label><input type="text" id="pTagline" /></div>
+        <div class="field full"><label><input type="checkbox" id="pActive" checked style="width:auto;margin-right:6px;" /> Active (visible on site)</label></div>
+      </div>
+      <div id="prodErr" class="alert alert-error" hidden></div>
+      <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;">
+        <button type="button" class="btn-outline" id="cancelBtn">Cancel</button>
+        <button type="submit" class="btn-primary" id="saveBtn">Save Product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="../js/firebase-config.js"></script>
+<script src="js/admin-auth.js"></script>
+<script src="js/admin-products.js"></script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Applications — SVE Admin</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="../images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/admin.css" />
+<style>
+  .tabs { display: flex; gap: 6px; background: #0f172a; padding: 4px; border-radius: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tabs button { padding: 8px 16px; border-radius: 6px; font-size: .82rem; font-weight: 600; color: #94a3b8; }
+  .tabs button.active { background: #1e293b; color: #fff; }
+  .toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .toolbar input { flex: 1; min-width: 200px; padding: 10px 14px; background: #0f172a; border: 1.5px solid #334155; border-radius: 8px; color: #e2e8f0; font-size: .88rem; }
+  .toolbar input:focus { outline: none; border-color: #3b82f6; }
+  .row-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .doc-link { color: #60a5fa; font-size: .82rem; }
+  .doc-link:hover { text-decoration: underline; }
+  .app-details { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .app-details .row { display: flex; flex-direction: column; gap: 2px; }
+  .app-details .row .k { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: #64748b; font-weight: 700; }
+  .app-details .row .v { font-size: .92rem; color: #e2e8f0; word-break: break-word; }
+  .cred-box { background: #0f172a; border: 1px dashed #3b82f6; border-radius: 8px; padding: 14px; margin: 12px 0; }
+  .cred-box .lbl { font-size: .72rem; color: #60a5fa; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; margin-bottom: 6px; }
+  .cred-box .val { font-family: monospace; font-size: .95rem; color: #fff; word-break: break-all; }
+  @media(max-width:600px){ .app-details{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-brand">
+      <img src="../images/logo.png" alt="SVE" onerror="this.style.display='none'" />
+      <div class="txt"><span class="n">SVE Admin</span><span class="s">CONTROL PANEL</span></div>
+    </div>
+    <nav class="admin-nav">
+      <a href="dashboard.html"><span class="ic">📊</span> Dashboard</a>
+      <a href="applications.html"><span class="ic">📝</span> Applications</a>
+      <a href="users.html"><span class="ic">👥</span> Users</a>
+      <a href="products.html"><span class="ic">📦</span> Products</a>
+      <a href="orders.html"><span class="ic">🛒</span> Orders</a>
+      <a href="leads.html"><span class="ic">📞</span> Leads</a>
+      <a href="analytics.html"><span class="ic">📈</span> Analytics</a>
+      <a href="settings.html"><span class="ic">⚙️</span> Settings</a>
+    </nav>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-topbar-left">
+        <button class="admin-hamburger" id="adminHamburger">☰</button>
+        <span class="admin-page-title">Applications</span>
+      </div>
+      <div class="admin-topbar-right">
+        <div class="admin-user"><span class="n">Admin</span><span class="e" id="adminEmail">…</span></div>
+        <button class="btn-outline btn-sm" data-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+
+      <div class="tabs" id="filterTabs">
+        <button data-status="pending"  class="active">Pending</button>
+        <button data-status="approved">Approved</button>
+        <button data-status="rejected">Rejected</button>
+        <button data-status="all">All</button>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" id="searchBox" placeholder="Search by name, phone, business, or App ID…" />
+        <button class="btn-outline btn-sm" id="refreshBtn">🔄 Refresh</button>
+      </div>
+
+      <div class="panel">
+        <div class="panel-body p-0" id="appsBody">
+          <div class="loading-block"><span class="spinner"></span> Loading…</div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="appModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Application Details</h3>
+      <button class="modal-close" id="closeModal">✕</button>
+    </div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="../js/firebase-config.js"></script>
+<script src="js/admin-auth.js"></script>
+<script src="js/admin-applications.js"></script>
+</body>
+</html>

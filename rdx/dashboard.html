@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard — SVE Admin</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="../images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-brand">
+      <img src="../images/logo.png" alt="SVE" onerror="this.style.display='none'" />
+      <div class="txt"><span class="n">SVE Admin</span><span class="s">CONTROL PANEL</span></div>
+    </div>
+    <nav class="admin-nav">
+      <a href="dashboard.html"><span class="ic">📊</span> Dashboard</a>
+      <a href="applications.html"><span class="ic">📝</span> Applications</a>
+      <a href="users.html"><span class="ic">👥</span> Users</a>
+      <a href="products.html"><span class="ic">📦</span> Products</a>
+      <a href="orders.html"><span class="ic">🛒</span> Orders</a>
+      <a href="leads.html"><span class="ic">📞</span> Leads</a>
+      <a href="analytics.html"><span class="ic">📈</span> Analytics</a>
+      <a href="settings.html"><span class="ic">⚙️</span> Settings</a>
+    </nav>
+    <div class="admin-sidebar-foot">
+      <a href="../index.html" target="_blank" style="color:#60a5fa;">↗ View Site</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-topbar-left">
+        <button class="admin-hamburger" id="adminHamburger">☰</button>
+        <span class="admin-page-title">Dashboard</span>
+      </div>
+      <div class="admin-topbar-right">
+        <div class="admin-user">
+          <span class="n">Admin</span>
+          <span class="e" id="adminEmail">…</span>
+        </div>
+        <button class="btn-outline btn-sm" data-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="lbl">Total Applications</div>
+          <div class="val" id="sTotal">—</div>
+          <div class="trend up" id="sTotalTrend"></div>
+        </div>
+        <div class="stat-card">
+          <div class="lbl">Pending</div>
+          <div class="val" id="sPending" style="color:#fcd34d;">—</div>
+          <div class="trend" style="color:#64748b;">Awaiting review</div>
+        </div>
+        <div class="stat-card">
+          <div class="lbl">Approved</div>
+          <div class="val" id="sApproved" style="color:#6ee7b7;">—</div>
+          <div class="trend" style="color:#64748b;">Active users</div>
+        </div>
+        <div class="stat-card">
+          <div class="lbl">Rejected</div>
+          <div class="val" id="sRejected" style="color:#fca5a5;">—</div>
+          <div class="trend" style="color:#64748b;">Closed</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Recent Applications</h3>
+          <a href="applications.html" class="btn-outline btn-sm">View All →</a>
+        </div>
+        <div class="panel-body p-0">
+          <div id="recentApps">
+            <div class="loading-block"><span class="spinner"></span> Loading…</div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="../js/firebase-config.js"></script>
+<script src="js/admin-auth.js"></script>
+<script src="js/admin-dashboard.js"></script>
+</body>
+</html>

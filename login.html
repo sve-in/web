@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Partner Login — SVE Business Portal</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/main.css" />
+<style>
+  .login-wrap { min-height: calc(100vh - 72px); display: flex; align-items: center; justify-content: center; padding: 40px 20px; background: linear-gradient(180deg,#f8fafc 0%, #eff6ff 100%); }
+  .login-card { background: white; border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow-lg); border: 1px solid var(--slate-100); max-width: 440px; width: 100%; }
+  .login-head { text-align: center; margin-bottom: 28px; }
+  .login-head .brand-logo { width: 64px; height: 64px; margin: 0 auto 16px; }
+  .login-head h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: 6px; }
+  .login-head p { color: var(--slate-500); font-size: .92rem; }
+  .pass-wrap { position: relative; }
+  .pass-wrap input { padding-right: 44px; }
+  .pass-toggle { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 6px; color: var(--slate-500); font-size: 1rem; }
+  .pass-toggle:hover { background: var(--slate-100); }
+  .row-between { display: flex; justify-content: space-between; align-items: center; margin: 8px 0 20px; font-size: .85rem; }
+  .check-wrap { display: flex; align-items: center; gap: 6px; color: var(--slate-700); cursor: pointer; }
+  .check-wrap input { width: auto; }
+  .link-btn { color: var(--blue-600); font-size: .85rem; font-weight: 600; }
+  .link-btn:hover { text-decoration: underline; }
+  .login-foot { text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--slate-100); font-size: .88rem; color: var(--slate-500); }
+  .login-foot a { color: var(--blue-600); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-text">
+        <span class="brand-name">SVE <span class="brand-badge">B2B</span></span>
+        <span class="brand-sub">Business Portal</span>
+      </div>
+    </a>
+    <div class="nav-actions">
+      <a href="apply.html" class="btn-primary">Apply Now</a>
+    </div>
+  </div>
+</header>
+
+<section class="login-wrap">
+  <div class="login-card">
+    <div class="login-head">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <h1>Partner Login</h1>
+      <p>Approved distributors only. / केवल अनुमोदित वितरक।</p>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" autocomplete="username" placeholder="you@business.com" required />
+      </div>
+
+      <div class="field" style="margin-top:14px;">
+        <label for="loginPassword">Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="loginPassword" autocomplete="current-password" placeholder="••••••••" required />
+          <button type="button" class="pass-toggle" id="togglePass" aria-label="Toggle password">👁</button>
+        </div>
+      </div>
+
+      <div class="row-between">
+        <label class="check-wrap"><input type="checkbox" id="rememberMe" /> Remember me</label>
+        <button type="button" class="link-btn" id="forgotBtn">Forgot password?</button>
+      </div>
+
+      <div id="loginError" class="alert alert-error" hidden></div>
+      <div id="loginInfo" class="alert alert-info" hidden></div>
+
+      <button type="submit" class="btn-primary btn-block btn-lg" id="loginBtn">
+        <span class="btn-text">Login →</span>
+        <span class="btn-spinner" hidden></span>
+      </button>
+    </form>
+
+    <div class="login-foot">
+      <p>Not registered yet? <a href="apply.html">Apply as Distributor →</a></p>
+      <p style="margin-top:8px;"><a href="apply-status.html">Check application status</a></p>
+    </div>
+  </div>
+</section>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
