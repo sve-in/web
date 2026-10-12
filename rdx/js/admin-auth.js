@@ -1,7 +1,7 @@
 /* ============================================================
-   SVE Admin Panel — Auth Guard
+   SVE Admin Panel — Auth Guard (Google-only)
    Only 2 hardcoded admin emails allowed.
-   Guard on every /rdx/* page except /rdx/index.html (login).
+   Uses Google Sign-In popup — no password needed.
    ============================================================ */
 
 (function () {
@@ -20,75 +20,76 @@
   }
   window.isAdminEmail = isAdminEmail;
 
-  /* ---------- LOGIN PAGE LOGIC ---------- */
-  const loginForm = document.getElementById('adminLoginForm');
-  if (loginForm) {
-    const emailEl = document.getElementById('adminEmail');
-    const passEl  = document.getElementById('adminPassword');
-    const toggle  = document.getElementById('togglePass');
+  /* ---------- GOOGLE LOGIN ---------- */
+  const googleBtn = document.getElementById('googleLoginBtn');
+  if (googleBtn) {
     const errBox  = document.getElementById('adminError');
     const infoBox = document.getElementById('adminInfo');
-    const btn     = document.getElementById('adminLoginBtn');
-    const spinner = btn.querySelector('.btn-spinner');
-    const btnText = btn.querySelector('.btn-text');
+    const btnText = googleBtn.querySelector('.btn-text');
+    const spinner = googleBtn.querySelector('.btn-spinner');
 
-    toggle.addEventListener('click', function () {
-      passEl.type = passEl.type === 'password' ? 'text' : 'password';
-    });
+    function showErr(m)  { errBox.textContent = m; errBox.hidden = false; infoBox.hidden = true; }
+    function showInfo(m) { infoBox.textContent = m; infoBox.hidden = false; errBox.hidden = true; }
 
-    function showErr(m) { errBox.textContent = m; errBox.hidden = false; infoBox.hidden = true; }
-    function showInfo(m){ infoBox.textContent = m; infoBox.hidden = false; errBox.hidden = true; }
-
-    loginForm.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      errBox.hidden = true; infoBox.hidden = true;
-      const email = emailEl.value.trim().toLowerCase();
-      const pass = passEl.value;
-
-      if (!isAdminEmail(email)) {
-        showErr('Access denied. This is not an admin account. / पहुंच अस्वीकृत।');
-        return;
-      }
-      if (!pass) { showErr('Password required. / पासवर्ड आवश्यक।'); return; }
-
-      btn.disabled = true; spinner.hidden = false; btnText.textContent = 'Signing in…';
+    googleBtn.addEventListener('click', async function () {
+      errBox.hidden = true;
+      infoBox.hidden = true;
+      googleBtn.disabled = true;
+      spinner.hidden = false;
+      btnText.textContent = 'Signing in…';
 
       try {
-        const cred = await window.auth.signInWithEmailAndPassword(email, pass);
-        // Verify email is verified (rules require it)
-        if (!cred.user.emailVerified) {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+
+        const result = await window.auth.signInWithPopup(provider);
+        const user = result.user;
+        const email = (user.email || '').toLowerCase().trim();
+
+        // 1. Must be one of the allowed admin emails
+        if (!isAdminEmail(email)) {
           await window.auth.signOut();
-          showErr('Admin email not verified. Contact owner. / ईमेल सत्यापित नहीं।');
-          return;
-        }
-        // Double-check email matches (in case Firebase returned different)
-        if (!isAdminEmail(cred.user.email)) {
-          await window.auth.signOut();
-          showErr('Access denied. / पहुंच अस्वीकृत।');
+          showErr('Access denied. This Google account is not an SVE admin. / यह Google खाता SVE एडमिन नहीं है।');
           return;
         }
 
-        // Store session flag (sessionStorage — cleared on tab close)
-        try { sessionStorage.setItem('sve_admin', cred.user.email); } catch (e2) {}
+        // 2. Must have verified email (Google always does, but double-check)
+        if (!user.emailVerified) {
+          await window.auth.signOut();
+          showErr('Google email not verified. Please verify and try again.');
+          return;
+        }
 
-        if (window.showToast) window.showToast('Welcome, admin!', 'success');
+        // 3. Save session flag
+        try { sessionStorage.setItem('sve_admin', email); } catch (e2) {}
+
+        if (window.adminToast) window.adminToast('Welcome, admin!', 'success');
         setTimeout(function () { window.location.href = DASHBOARD_PAGE; }, 400);
 
       } catch (err) {
-        console.error('[Admin Auth]', err);
-        let msg = 'Login failed. / लॉगिन विफल।';
-        if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found') {
-          msg = 'Invalid credentials. / गलत क्रेडेंशियल।';
-        } else if (err.code === 'auth/too-many-requests') {
-          msg = 'Too many attempts. Try later. / बहुत प्रयास।';
+        console.error('[Admin Google Auth]', err);
+        let msg = 'Sign-in failed. Please try again. / साइन-इन विफल।';
+
+        if (err.code === 'auth/popup-closed-by-user') {
+          msg = 'Sign-in cancelled. Please try again. / साइन-इन रद्द।';
+        } else if (err.code === 'auth/popup-blocked') {
+          msg = 'Popup blocked by browser. Please allow popups and retry. / पॉपअप ब्लॉक है।';
+        } else if (err.code === 'auth/network-request-failed') {
+          msg = 'Network error. Check your internet connection.';
+        } else if (err.code === 'auth/unauthorized-domain') {
+          msg = 'This domain is not authorized in Firebase Console. Add it under Authentication → Settings → Authorized domains.';
+        } else if (err.code === 'auth/operation-not-allowed') {
+          msg = 'Google sign-in is not enabled in Firebase Console. Enable it under Authentication → Sign-in method.';
         }
         showErr(msg);
       } finally {
-        btn.disabled = false; spinner.hidden = true; btnText.textContent = 'Sign In →';
+        googleBtn.disabled = false;
+        spinner.hidden = true;
+        btnText.textContent = 'Sign in with Google';
       }
     });
 
-    // Already logged in as admin?
+    // If already logged in as admin → skip login page
     window.auth.onAuthStateChanged(function (user) {
       if (user && isAdminEmail(user.email)) {
         window.location.href = DASHBOARD_PAGE;
@@ -106,7 +107,12 @@
           window.location.href = LOGIN_PAGE;
           return;
         }
-        const profile = { uid: user.uid, email: user.email, name: 'Admin' };
+        const profile = {
+          uid: user.uid,
+          email: user.email,
+          name: user.displayName || 'Admin',
+          photo: user.photoURL || ''
+        };
         window.adminUser = profile;
         resolve(profile);
         if (callback) callback(profile);
@@ -137,7 +143,7 @@
     }, 3500);
   };
 
-  /* ---------- MOBILE SIDEBAR TOGGLE ---------- */
+  /* ---------- MOBILE SIDEBAR TOGGLE + UI ---------- */
   document.addEventListener('DOMContentLoaded', function () {
     const ham = document.getElementById('adminHamburger');
     const sb  = document.getElementById('adminSidebar');
