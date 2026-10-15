@@ -1,7 +1,7 @@
 /* ============================================================
    SVE Admin — Applications Management
-   NOTE: Applicant ne apply karte waqt hi password set kar diya hai
-   (self-set). Approve karne pe sirf users doc banata hai.
+   Applicant already has password (self-set at apply/signup).
+   Approve → activate users doc (with emailVerified: true).
    ============================================================ */
 (function () {
   'use strict';
@@ -117,7 +117,7 @@
       + row('Application ID', a.applicationId || a._id)
       + row('Status', '<span class="pill pill-' + (a.status || 'pending') + '">' + (a.status || 'pending') + '</span>')
       + row('Name', a.name)
-      + row('Phone', (a.phone || '') + (a.phoneVerified ? ' ✓ verified' : ''))
+      + row('Phone', a.phone)
       + row('Email', a.email)
       + row('Business Name', a.businessName)
       + row('Business Type', a.businessType)
@@ -163,32 +163,31 @@
     const a = ALL_APPS.find(function (x) { return x._id === id; });
     if (!a) return;
     if (!a.uid) {
-      window.adminToast('No UID found on application — user may not have completed signup', 'error');
+      window.adminToast('No UID found on application', 'error');
       return;
     }
     if (!confirm('Approve ' + a.name + '? This will activate their account.')) return;
 
     try {
-      // 1. Create/Update user profile in Firestore (Firebase Auth user already exists — created at apply time)
       await window.db.collection('users').doc(a.uid).set({
         uid: a.uid,
         email: a.email,
         name: a.name,
-        businessName: a.businessName,
+        businessName: a.businessName || '',
         phone: a.phone,
-        city: a.city,
-        state: a.state,
-        businessType: a.businessType,
+        city: a.city || '',
+        state: a.state || '',
+        businessType: a.businessType || '',
         gst: a.gst || '',
         role: 'member',
         status: 'active',
+        emailVerified: true,
         applicationId: a.applicationId || a._id,
         approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
         approvedBy: window.adminUser.email,
         createdAt: a.createdAt || firebase.firestore.FieldValue.serverTimestamp()
       }, { merge: true });
 
-      // 2. Update application doc
       await window.db.collection('applications').doc(a._id).update({
         status: 'approved',
         approvedAt: firebase.firestore.FieldValue.serverTimestamp(),

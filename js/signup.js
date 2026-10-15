@@ -1,209 +1,31 @@
 /* ============================================================
-   SVE Business Portal — Signup flow
-   Step 1: Name + Email + Phone → Firebase Phone Auth (send OTP)
-   Step 2: Enter OTP → verify
-   Step 3: Set password → create account
+   SVE Business Portal — Signup (Email verification flow)
+   No OTP. Firebase sends email verification link.
    ============================================================ */
 
 (function () {
   'use strict';
 
-  const form = document.getElementById('suName'); // just check
+  const form = document.getElementById('signupForm');
   if (!form) return;
 
-  let confirmationResult = null;
-  let recaptchaVerifier = null;
-  let verifiedPhone = '';
-  let verifiedName = '';
-  let verifiedEmail = '';
+  const suErr = document.getElementById('suErr');
+  const suCreateBtn = document.getElementById('suCreateBtn');
+  const spinner = suCreateBtn.querySelector('.btn-spinner');
+  const btnText = suCreateBtn.querySelector('.btn-text');
 
-  /* ---------- STEP NAV ---------- */
-  function gotoStep(n) {
-    document.querySelectorAll('.step-panel').forEach(function (p) {
-      p.classList.toggle('active', Number(p.dataset.step) === n);
-    });
-    document.querySelectorAll('[data-stepnum]').forEach(function (el) {
-      const num = Number(el.dataset.stepnum);
-      el.classList.remove('active', 'done');
-      if (num < n) el.classList.add('done');
-      else if (num === n) el.classList.add('active');
-    });
-    document.querySelectorAll('[data-stepline]').forEach(function (el) {
-      const num = Number(el.dataset.stepline);
-      el.classList.toggle('done', num < n);
-    });
-  }
+  const isEmail = function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || '').trim()); };
+  const isPhone = function (v) { return /^[6-9]\d{9}$/.test(String(v || '').trim()); };
 
-  /* ---------- RECAPTCHA ---------- */
-  try {
-    recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptchaContainer', {
-      size: 'normal',
-      callback: function () {},
-      'expired-callback': function () {
-        if (window.uiToast) window.uiToast('reCAPTCHA expired — please retry', 'warning');
-      }
-    });
-    recaptchaVerifier.render();
-  } catch (e) {
-    console.warn('[Signup] reCAPTCHA init failed', e);
-  }
-
-  /* ---------- VALIDATORS ---------- */
-  function isEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || '').trim()); }
-  function isPhone(v) { return /^[6-9]\d{9}$/.test(String(v || '').trim()); }
-
-  function showErr(id, msg) {
-    const el = document.getElementById(id);
-    el.textContent = msg;
-    el.hidden = false;
-  }
-  function clearErr(id) { document.getElementById(id).hidden = true; }
-
-  /* ---------- STEP 1: SEND OTP ---------- */
-  document.getElementById('suSendOtpBtn').addEventListener('click', async function () {
-    clearErr('suErr1');
-    const name = document.getElementById('suName').value.trim();
-    const email = document.getElementById('suEmail').value.trim().toLowerCase();
-    const phone = document.getElementById('suPhone').value.trim();
-
-    if (!name) { return showErr('suErr1', 'Please enter your name.'); }
-    if (!isEmail(email)) { return showErr('suErr1', 'Please enter a valid email.'); }
-    if (!isPhone(phone)) { return showErr('suErr1', 'Enter valid 10-digit mobile (starts with 6-9).'); }
-
-    // Check if email already used
-    const methods = await window.auth.fetchSignInMethodsForEmail(email);
-    if (methods && methods.length) {
-      return showErr('suErr1', 'This email is already registered. Please login.');
-    }
-
-    const btn = this;
-    btn.disabled = true;
-    btn.textContent = 'Sending OTP…';
-
-    try {
-      const phoneE164 = '+91' + phone;
-      confirmationResult = await window.auth.signInWithPhoneNumber(phoneE164, recaptchaVerifier);
-
-      verifiedName = name;
-      verifiedEmail = email;
-      verifiedPhone = phone;
-
-      document.getElementById('suPhoneEcho').textContent = phoneE164;
-      gotoStep(2);
-      startResendTimer();
-      document.querySelector('.otp-digit').focus();
-      if (window.uiToast) window.uiToast('OTP sent successfully', 'success');
-    } catch (err) {
-      console.error('[Signup] OTP send failed', err);
-      let msg = 'Could not send OTP. Please try again.';
-      if (err.code === 'auth/invalid-phone-number') msg = 'Invalid phone number.';
-      else if (err.code === 'auth/too-many-requests') msg = 'Too many attempts. Please wait and try again.';
-      else if (err.code === 'auth/quota-exceeded') msg = 'Daily SMS limit reached. Try later.';
-      showErr('suErr1', msg);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Send OTP →';
-    }
-  });
-
-  /* ---------- OTP INPUT HANDLING ---------- */
-  const otpInputs = document.querySelectorAll('.otp-digit');
-  otpInputs.forEach(function (inp, i) {
-    inp.addEventListener('input', function () {
-      inp.value = inp.value.replace(/\D/g, '');
-      if (inp.value) inp.classList.add('filled');
-      else inp.classList.remove('filled');
-      if (inp.value && i < otpInputs.length - 1) otpInputs[i + 1].focus();
-    });
-    inp.addEventListener('keydown', function (e) {
-      if (e.key === 'Backspace' && !inp.value && i > 0) otpInputs[i - 1].focus();
-    });
-    inp.addEventListener('paste', function (e) {
-      e.preventDefault();
-      const data = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
-      data.split('').forEach(function (ch, idx) {
-        if (otpInputs[idx]) { otpInputs[idx].value = ch; otpInputs[idx].classList.add('filled'); }
-      });
-      if (data.length === 6) otpInputs[5].focus();
-    });
-  });
-
-  function getOtpValue() {
-    let v = '';
-    otpInputs.forEach(function (inp) { v += inp.value; });
-    return v;
-  }
-
-  /* ---------- STEP 2: VERIFY OTP ---------- */
-  document.getElementById('suVerifyOtpBtn').addEventListener('click', async function () {
-    clearErr('suErr2');
-    document.getElementById('suInfo2').hidden = true;
-    const code = getOtpValue();
-    if (code.length !== 6) return showErr('suErr2', 'Please enter the full 6-digit code.');
-
-    const btn = this;
-    btn.disabled = true;
-    btn.textContent = 'Verifying…';
-
-    try {
-      // Store OTP code for the account creation step
-      window.__sveOtpCode = code;
-      // Don't call confirmationResult.confirm() yet — we do it at step 3.
-      // But we can verify now and keep the credential. Better: keep code, use at step 3.
-      gotoStep(3);
-      document.getElementById('suPassword').focus();
-      if (window.uiToast) window.uiToast('Phone verified. Now set your password.', 'success');
-    } catch (err) {
-      console.error(err);
-      showErr('suErr2', 'Verification failed. Please retry.');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Verify OTP →';
-    }
-  });
-
-  /* ---------- RESEND TIMER ---------- */
-  let resendTimer = null;
-  function startResendTimer() {
-    const btn = document.getElementById('suResendBtn');
-    const span = document.getElementById('suResendTimer');
-    let sec = 30;
-    btn.disabled = true;
-    span.textContent = sec;
-    clearInterval(resendTimer);
-    resendTimer = setInterval(function () {
-      sec--;
-      span.textContent = sec;
-      if (sec <= 0) {
-        clearInterval(resendTimer);
-        btn.disabled = false;
-        btn.innerHTML = 'Resend OTP';
-      }
-    }, 1000);
-  }
-
-  document.getElementById('suResendBtn').addEventListener('click', async function () {
-    clearErr('suErr2');
-    if (!verifiedPhone) return;
-    try {
-      confirmationResult = await window.auth.signInWithPhoneNumber('+91' + verifiedPhone, recaptchaVerifier);
-      startResendTimer();
-      document.getElementById('suInfo2').textContent = 'OTP resent to +91' + verifiedPhone;
-      document.getElementById('suInfo2').hidden = false;
-    } catch (err) {
-      showErr('suErr2', 'Could not resend. Please wait and try again.');
-    }
-  });
-
-  /* ---------- PASSWORD ---------- */
+  // Password toggle
   document.getElementById('suTogglePass').addEventListener('click', function () {
     const p = document.getElementById('suPassword');
     p.type = p.type === 'password' ? 'text' : 'password';
   });
 
+  // Password strength indicator
   document.getElementById('suPassword').addEventListener('input', function () {
     const v = this.value;
-    const el = document.getElementById('suPwStrength');
     let score = 0;
     if (v.length >= 8) score++;
     if (/[A-Z]/.test(v)) score++;
@@ -211,80 +33,183 @@
     if (/\d/.test(v)) score++;
     if (/[^A-Za-z0-9]/.test(v)) score++;
     const labels = ['', 'Very weak', 'Weak', 'Fair', 'Strong', 'Very strong'];
-    const colors = ['', '#ef4444', '#f59e0b', '#f59e0b', '#10b981', '#10b981'];
+    const el = document.getElementById('suPwStrength');
     el.textContent = v ? 'Strength: ' + (labels[score] || '—') : '';
-    el.style.color = colors[score] || '';
+    el.style.color = score >= 4 ? 'var(--green)' : (score >= 3 ? 'var(--amber)' : 'var(--red)');
   });
 
-  /* ---------- STEP 3: CREATE ACCOUNT ---------- */
-  document.getElementById('suCreateBtn').addEventListener('click', async function () {
-    clearErr('suErr3');
+  function showErr(msg) { suErr.textContent = msg; suErr.hidden = false; }
+
+  suCreateBtn.addEventListener('click', async function (e) {
+    e.preventDefault();
+    suErr.hidden = true;
+
+    const name = document.getElementById('suName').value.trim();
+    const email = document.getElementById('suEmail').value.trim().toLowerCase();
+    const phone = document.getElementById('suPhone').value.trim();
+    const business = document.getElementById('suBusiness').value.trim();
+    const city = document.getElementById('suCity').value.trim();
     const pw1 = document.getElementById('suPassword').value;
     const pw2 = document.getElementById('suPassword2').value;
 
-    if (pw1.length < 8) return showErr('suErr3', 'Password must be at least 8 characters.');
-    if (!/[A-Z]/.test(pw1)) return showErr('suErr3', 'Include at least one uppercase letter.');
-    if (!/\d/.test(pw1)) return showErr('suErr3', 'Include at least one number.');
-    if (pw1 !== pw2) return showErr('suErr3', 'Passwords do not match.');
+    // Validate
+    if (!name) return showErr('Please enter your full name.');
+    if (!isEmail(email)) return showErr('Please enter a valid email.');
+    if (!isPhone(phone)) return showErr('Enter valid 10-digit mobile (starts with 6-9).');
+    if (pw1.length < 8) return showErr('Password must be at least 8 characters.');
+    if (!/[A-Z]/.test(pw1)) return showErr('Password must include an uppercase letter.');
+    if (!/\d/.test(pw1)) return showErr('Password must include a number.');
+    if (pw1 !== pw2) return showErr('Passwords do not match.');
 
-    const code = window.__sveOtpCode;
-    if (!code || !confirmationResult) return showErr('suErr3', 'Please restart signup.');
-
-    const btn = this;
-    btn.disabled = true;
-    btn.textContent = 'Creating account…';
+    suCreateBtn.disabled = true;
+    spinner.hidden = false;
+    btnText.textContent = 'Creating account…';
 
     try {
-      // Confirm OTP → this signs user in
-      const cred = await confirmationResult.confirm(code);
+      // 1. Create Firebase Auth user (email + password)
+      const cred = await window.auth.createUserWithEmailAndPassword(email, pw1);
       const user = cred.user;
 
-      // Now update password on this user (Firebase allows setting password right after phone sign-in)
-      await user.updatePassword(pw1);
-      await user.updateProfile({ displayName: verifiedName });
+      // 2. Update display name
+      await user.updateProfile({ displayName: name });
 
-      // Save user profile in Firestore
+      // 3. Send verification email
+      try {
+        await user.sendEmailVerification({
+          url: window.location.origin + '/login.html',
+          handleCodeInApp: false
+        });
+        console.log('[Signup] Verification email sent to', email);
+      } catch (emailErr) {
+        console.warn('[Signup] Verification email failed:', emailErr);
+        // Continue — user can resend later
+      }
+
+      // 4. Save to Firestore users collection (status = pending until admin approves)
       await window.db.collection('users').doc(user.uid).set({
         uid: user.uid,
-        name: verifiedName,
-        email: verifiedEmail,
-        phone: verifiedPhone,
+        name: name,
+        email: email,
+        phone: phone,
+        businessName: business || '',
+        city: city || '',
         role: 'member',
-        status: 'active',
+        status: 'pending_approval',
+        emailVerified: false,
         signupSource: 'self-signup',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }, { merge: true });
 
-      // Also add email to auth (link email/password) so future email logins work
-      try {
-        const emailCred = firebase.auth.EmailAuthProvider.credential(verifiedEmail, pw1);
-        await user.linkWithCredential(emailCred);
-      } catch (linkErr) {
-        console.warn('[Signup] Email link failed (maybe already linked):', linkErr.code);
-      }
+      // 5. Also add to applications collection (so admin sees in applications list)
+      const year = new Date().getFullYear();
+      const counterRef = window.db.collection('counters').doc('applications_' + year);
+      const num = await window.db.runTransaction(async function (tx) {
+        const d = await tx.get(counterRef);
+        const n = (d.exists ? (d.data().count || 0) : 0) + 1;
+        tx.set(counterRef, { count: n, year: year, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+        return n;
+      });
+      const appId = 'SVE-APP-' + year + '-' + String(num).padStart(4, '0');
 
-      // Notify Google Sheet
+      await window.db.collection('applications').doc(appId).set({
+        applicationId: appId,
+        uid: user.uid,
+        name: name,
+        email: email,
+        phone: phone,
+        businessName: business || '',
+        city: city || '',
+        state: '',
+        businessType: '',
+        gst: '',
+        volume: '',
+        message: 'Self-signup (email verification)',
+        status: 'pending',
+        source: 'portal-signup',
+        passwordSet: true,
+        emailVerifySent: true,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      // 6. Add to leads
+      await window.db.collection('leads').add({
+        name: name, phone: phone, email: email,
+        message: 'Self signup (email verification)',
+        source: 'signup', appId: appId,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      // 7. Google Sheet
       if (window.sheetsSend) {
+        window.sheetsSend('application', {
+          applicationId: appId, name: name, phone: phone,
+          email: email, businessName: business || '',
+          city: city || '', state: '', businessType: '',
+          gst: '', volume: '', message: 'Self-signup',
+          status: 'pending', docFileName: ''
+        });
         window.sheetsSend('lead', {
-          name: verifiedName, phone: verifiedPhone, email: verifiedEmail,
-          message: 'Self signup (phone verified)', source: 'signup', appId: ''
+          name: name, phone: phone, email: email,
+          message: 'Self signup (email verification)',
+          source: 'signup', appId: appId
         });
       }
 
-      if (window.uiToast) window.uiToast('Account created! Redirecting…', 'success');
-      setTimeout(function () { window.location.href = 'dashboard.html'; }, 800);
+      // 8. Sign out — user will login after verification + admin approval
+      await window.auth.signOut();
+
+      // 9. Show success screen
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('signupSuccess').style.display = 'block';
+      document.getElementById('sentEmail').textContent = email;
+
+      if (window.uiToast) window.uiToast('Account created! Check your email.', 'success');
 
     } catch (err) {
-      console.error('[Signup] Create failed', err);
-      let msg = 'Could not create account. Please retry.';
-      if (err.code === 'auth/invalid-verification-code') msg = 'Wrong OTP. Please go back and re-enter.';
-      else if (err.code === 'auth/email-already-in-use') msg = 'This email is already registered.';
-      else if (err.code === 'auth/weak-password') msg = 'Password too weak.';
-      showErr('suErr3', msg);
+      console.error('[Signup] Error:', err);
+      let msg = 'Could not create account. Please try again.';
+      if (err.code === 'auth/email-already-in-use') msg = 'This email is already registered. Please login.';
+      else if (err.code === 'auth/weak-password') msg = 'Password is too weak.';
+      else if (err.code === 'auth/invalid-email') msg = 'Invalid email format.';
+      else if (err.code === 'auth/network-request-failed') msg = 'Network error. Check your internet.';
+      showErr(msg);
     } finally {
-      btn.disabled = false;
-      btn.textContent = 'Create Account →';
+      suCreateBtn.disabled = false;
+      spinner.hidden = true;
+      btnText.textContent = 'Create Account →';
     }
   });
+
+  // Resend verification email
+  const resendBtn = document.getElementById('resendBtn');
+  if (resendBtn) {
+    resendBtn.addEventListener('click', async function () {
+      const email = document.getElementById('suEmail').value.trim().toLowerCase();
+      const pw = document.getElementById('suPassword').value;
+      if (!email || !pw) {
+        if (window.uiToast) window.uiToast('Please fill email and password again', 'error');
+        return;
+      }
+      resendBtn.disabled = true;
+      resendBtn.textContent = 'Sending…';
+      try {
+        // Re-login temporarily to resend
+        const cred = await window.auth.signInWithEmailAndPassword(email, pw);
+        await cred.user.sendEmailVerification({
+          url: window.location.origin + '/login.html',
+          handleCodeInApp: false
+        });
+        await window.auth.signOut();
+        if (window.uiToast) window.uiToast('Email resent!', 'success');
+      } catch (e) {
+        console.warn(e);
+        if (window.uiToast) window.uiToast('Could not resend — try again in a minute', 'error');
+      } finally {
+        resendBtn.disabled = false;
+        resendBtn.textContent = 'Resend email';
+      }
+    });
+  }
 
 })();

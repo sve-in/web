@@ -16,8 +16,6 @@
   .apply-head h1 { font-size: clamp(1.6rem,3vw,2.2rem); font-weight: 800; letter-spacing: -.02em; margin-bottom: 8px; }
   .apply-head p { color: var(--slate-500); font-size: .98rem; }
   .form-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
-  .step-panel { display: none; }
-  .step-panel.active { display: block; }
   .success-screen { text-align: center; padding: 30px 10px; display: none; }
   .success-screen.show { display: block; }
   .success-icon { font-size: 4rem; margin-bottom: 16px; }
@@ -57,20 +55,12 @@
       <div id="formSection">
         <div class="apply-head">
           <h1>Distributor Application</h1>
-          <p>Fill in your business details. Takes about 2 minutes.</p>
+          <p>Fill in your details. Takes about 2 minutes.</p>
         </div>
 
-        <div class="steps-bar">
-          <div class="step-item"><div class="num active" data-stepnum="1">1</div><div class="lbl">Details</div></div>
-          <div class="line" data-stepline="1"></div>
-          <div class="step-item"><div class="num" data-stepnum="2">2</div><div class="lbl">Verify Phone</div></div>
-          <div class="line" data-stepline="2"></div>
-          <div class="step-item"><div class="num" data-stepnum="3">3</div><div class="lbl">Password</div></div>
-        </div>
+        <form id="applyForm" novalidate>
 
-        <!-- STEP 1 -->
-        <div class="step-panel active" data-step="1">
-          <h3 style="font-size:1rem;font-weight:700;color:var(--slate-700);margin-bottom:12px;">Personal &amp; Business Details</h3>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--slate-700);margin:20px 0 12px;">1. Personal Details</h3>
           <div class="form-grid">
             <div class="form-row-2">
               <div class="field">
@@ -89,6 +79,10 @@
               <input type="email" id="email" required placeholder="you@business.com" />
               <span class="err"></span>
             </div>
+          </div>
+
+          <h3 style="font-size:1rem;font-weight:700;color:var(--slate-700);margin:28px 0 12px;">2. Business Details</h3>
+          <div class="form-grid">
             <div class="field">
               <label>Business / Firm Name <span class="req">*</span></label>
               <input type="text" id="businessName" required placeholder="e.g. Kumar Traders" />
@@ -152,83 +146,53 @@
             </div>
           </div>
 
-          <div id="recaptchaContainer" style="margin:16px 0;"></div>
-          <div id="step1Err" class="alert alert-error" hidden></div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--slate-700);margin:28px 0 12px;">3. Set Password</h3>
+          <p style="font-size:.85rem;color:var(--slate-500);margin-bottom:14px;">After admin approval, you'll log in with your email and this password.</p>
+
+          <div class="form-row-2">
+            <div class="field">
+              <label>Password <span class="req">*</span></label>
+              <div style="position:relative;">
+                <input type="password" id="password" placeholder="Min 8 chars, 1 upper, 1 number" style="padding-right:44px;" />
+                <button type="button" class="pass-toggle" id="togglePass" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--slate-500);">👁</button>
+              </div>
+              <span class="hint" id="pwStrength" style="font-size:.78rem;color:var(--slate-500);"></span>
+            </div>
+            <div class="field">
+              <label>Confirm Password <span class="req">*</span></label>
+              <input type="password" id="password2" placeholder="Re-enter password" />
+            </div>
+          </div>
+
+          <div id="formError" class="alert alert-error" hidden></div>
 
           <div class="form-foot">
             <a href="index.html" class="btn-ghost">← Cancel</a>
-            <button class="btn-primary btn-lg" id="sendOtpBtn">
-              <span class="btn-text">Send OTP →</span>
-              <span class="btn-spinner" hidden></span>
-            </button>
-          </div>
-        </div>
-
-        <!-- STEP 2 -->
-        <div class="step-panel" data-step="2">
-          <p style="text-align:center;color:var(--slate-500);font-size:.9rem;margin-bottom:10px;">
-            Enter the 6-digit code sent to <strong id="phoneEcho">—</strong>
-          </p>
-          <div class="otp-row">
-            <input type="tel" maxlength="1" class="otp-digit" />
-            <input type="tel" maxlength="1" class="otp-digit" />
-            <input type="tel" maxlength="1" class="otp-digit" />
-            <input type="tel" maxlength="1" class="otp-digit" />
-            <input type="tel" maxlength="1" class="otp-digit" />
-            <input type="tel" maxlength="1" class="otp-digit" />
-          </div>
-          <div id="step2Err" class="alert alert-error" hidden></div>
-          <div class="form-foot" style="justify-content:center;flex-direction:column;">
-            <button class="btn-primary btn-lg" id="verifyOtpBtn" style="width:100%;">
-              <span class="btn-text">Verify OTP →</span>
-              <span class="btn-spinner" hidden></span>
-            </button>
-            <button class="btn-ghost" id="resendBtn" disabled style="margin-top:10px;">Resend in <span id="resendTimer">30</span>s</button>
-            <button class="btn-ghost" id="backToStep1" style="margin-top:6px;">← Edit details</button>
-          </div>
-        </div>
-
-        <!-- STEP 3 -->
-        <div class="step-panel" data-step="3">
-          <h3 style="font-size:1rem;font-weight:700;color:var(--slate-700);margin-bottom:12px;">Set your password</h3>
-          <p style="font-size:.85rem;color:var(--slate-500);margin-bottom:14px;">After admin approves, you'll log in with your email and this password.</p>
-
-          <div class="field" style="margin-bottom:14px;">
-            <label>Password <span class="req">*</span></label>
-            <div style="position:relative;">
-              <input type="password" id="password" placeholder="Min 8 chars, 1 upper, 1 number" style="padding-right:44px;" />
-              <button type="button" class="pass-toggle" id="togglePass" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--slate-500);">👁</button>
-            </div>
-            <span class="hint" id="pwStrength" style="font-size:.78rem;color:var(--slate-500);"></span>
-          </div>
-          <div class="field" style="margin-bottom:14px;">
-            <label>Confirm Password <span class="req">*</span></label>
-            <input type="password" id="password2" placeholder="Re-enter password" />
-          </div>
-
-          <div id="step3Err" class="alert alert-error" hidden></div>
-
-          <div class="form-foot">
-            <button class="btn-ghost" id="backToStep2">← Back</button>
-            <button class="btn-primary btn-lg" id="submitBtn">
+            <button type="submit" class="btn-primary btn-lg" id="submitBtn">
               <span class="btn-text">Submit Application →</span>
               <span class="btn-spinner" hidden></span>
             </button>
           </div>
-        </div>
+        </form>
       </div>
 
-      <!-- SUCCESS -->
       <div class="success-screen" id="successSection">
         <div class="success-icon">✅</div>
         <h2>Application Submitted!</h2>
-        <p>Our team will review and get back within 24–48 hours. You'll receive login access on approval.</p>
+        <p>Please verify your email first. Then our team will review and approve within 24–48 hours.</p>
         <div class="app-id-box">
           <div class="app-id-lbl">Your Application ID</div>
           <div class="app-id-val" id="appIdVal">—</div>
           <button class="btn-outline copy-btn" id="copyAppId">📋 Copy ID</button>
         </div>
-        <div class="success-actions" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <div style="background:var(--blue-50);border-radius:var(--radius);padding:16px;margin-bottom:20px;font-size:.85rem;color:var(--blue-600);text-align:left;">
+          <strong>Next steps:</strong><br/>
+          1. Check your email inbox (and spam folder)<br/>
+          2. Click the verification link<br/>
+          3. Wait for admin approval<br/>
+          4. Login and start ordering
+        </div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
           <a href="apply-status.html" class="btn-primary">Check Status →</a>
           <a href="index.html" class="btn-outline">Back to Home</a>
         </div>
