@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Refund & Returns — SVE Business Portal</title>
+<link rel="icon" href="images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-text"><span class="brand-name">SVE <span class="brand-badge">B2B</span></span><span class="brand-sub">Business Portal</span></div>
+    </a>
+    <div class="nav-actions"><a href="index.html" class="btn-outline">← Home</a></div>
+  </div>
+</header>
+
+<div class="legal-wrap">
+  <h1>Refund & Returns Policy</h1>
+  <p class="updated">Last updated: <span id="updDate"></span></p>
+
+  <h2>1. Return Window</h2>
+  <p>Returns accepted within <strong>48 hours of delivery</strong> for damaged, defective, or incorrect items. Report via the Complaints section.</p>
+
+  <h2>2. Eligible Returns</h2>
+  <ul>
+    <li>Physically damaged goods (with photos of damage and packaging).</li>
+    <li>Wrong product shipped versus invoice.</li>
+    <li>Short quantity versus invoice.</li>
+  </ul>
+
+  <h2>3. Non-Eligible Returns</h2>
+  <ul>
+    <li>Opened, used, or repackaged products (unless defective).</li>
+    <li>Damage reported after 48 hours.</li>
+    <li>Custom or made-to-order items.</li>
+  </ul>
+
+  <h2>4. Process</h2>
+  <ol>
+    <li>Raise a complaint on the portal with photos and order ID.</li>
+    <li>Our team reviews and approves within 3 working days.</li>
+    <li>For approved returns, we arrange pickup or ask you to ship back.</li>
+    <li>Replacement or refund issued within 7-10 working days.</li>
+  </ol>
+
+  <h2>5. Refund Mode</h2>
+  <p>Refunds are issued to the original payment method (bank transfer or credit adjustment to your account). Cash refunds are not provided.</p>
+
+  <h2>6. Contact</h2>
+  <p>Questions? <a href="contact.html" style="color:var(--blue-600);font-weight:600;">Contact us</a>.</p>
+</div>
+
+<div id="toastBox" class="toast-box"></div>
+<script>document.getElementById('updDate').textContent = new Date().toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'});</script>
+</body>
+</html>

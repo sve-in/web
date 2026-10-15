@@ -7,33 +7,30 @@
 <meta name="robots" content="noindex, nofollow" />
 <link rel="icon" href="images/logo.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/main.css" />
 <style>
   .dash-wrap { padding: 40px 0 80px; background: #f8fafc; min-height: calc(100vh - 72px); }
   .dash-hello { font-size: 1.6rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: 6px; }
   .dash-sub { color: var(--slate-500); margin-bottom: 32px; }
-  .dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
-  .stat-card { background: white; border-radius: var(--radius); padding: 24px; border: 1px solid var(--slate-100); box-shadow: var(--shadow-sm); }
-  .stat-lbl { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--slate-500); font-weight: 700; margin-bottom: 8px; }
-  .stat-val { font-size: 1.8rem; font-weight: 800; letter-spacing: -.02em; color: var(--slate-900); }
-  .panel { background: white; border-radius: var(--radius); border: 1px solid var(--slate-100); box-shadow: var(--shadow-sm); overflow: hidden; margin-bottom: 24px; }
-  .panel-head { padding: 20px 24px; border-bottom: 1px solid var(--slate-100); display: flex; justify-content: space-between; align-items: center; }
-  .panel-head h3 { font-size: 1.05rem; font-weight: 700; }
-  .panel-body { padding: 24px; }
-  .empty-state { text-align: center; padding: 40px 20px; color: var(--slate-500); }
-  .empty-state .icon { font-size: 2.5rem; margin-bottom: 8px; opacity: .5; }
-  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-  th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--slate-100); }
-  th { font-weight: 700; color: var(--slate-500); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
-  .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .75rem; font-weight: 700; }
-  .pill-pending   { background:#fffbeb; color:#92400e; }
-  .pill-processing{ background:#eff6ff; color:#1e40af; }
-  .pill-dispatched{ background:#eef2ff; color:#3730a3; }
-  .pill-delivered { background:#f0fdf4; color:#166534; }
-  .pill-cancelled { background:#fef2f2; color:#991b1b; }
-  @media(max-width:720px){ .dash-grid{grid-template-columns:1fr;} }
+  .dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+  .stat-card { background: white; border-radius: var(--radius); padding: 22px; border: 1px solid var(--slate-100); box-shadow: var(--shadow-sm); }
+  .stat-lbl { font-size: .76rem; text-transform: uppercase; letter-spacing: .06em; color: var(--slate-500); font-weight: 700; margin-bottom: 8px; }
+  .stat-val { font-size: 1.7rem; font-weight: 800; letter-spacing: -.02em; color: var(--slate-900); }
+  .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 32px; }
+  .qa-card { background: white; border: 1px solid var(--slate-100); border-radius: var(--radius); padding: 20px; text-align: center; transition: var(--transition); }
+  .qa-card:hover { border-color: var(--blue-400); transform: translateY(-2px); box-shadow: var(--shadow); }
+  .qa-icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .qa-lbl { font-size: .88rem; font-weight: 700; color: var(--slate-900); }
+  .panel { background: white; border-radius: var(--radius); border: 1px solid var(--slate-100); overflow: hidden; margin-bottom: 24px; box-shadow: var(--shadow-sm); }
+  .panel-head { padding: 18px 22px; border-bottom: 1px solid var(--slate-100); display: flex; justify-content: space-between; align-items: center; }
+  .panel-head h3 { font-size: 1.02rem; font-weight: 700; }
+  .panel-body { padding: 20px; }
+  .panel-body.p-0 { padding: 0; }
+  .empty-dash { text-align: center; padding: 40px 20px; color: var(--slate-500); }
+  .empty-dash .icon { font-size: 2.4rem; margin-bottom: 8px; opacity: .5; }
+  @media(max-width:900px){ .dash-grid{grid-template-columns:repeat(2,1fr);} .quick-actions{grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:600px){ .dash-grid{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
@@ -42,14 +39,18 @@
   <div class="container nav-inner">
     <a href="index.html" class="brand">
       <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
-      <div class="brand-text">
-        <span class="brand-name">SVE <span class="brand-badge">B2B</span></span>
-        <span class="brand-sub">Business Portal</span>
-      </div>
+      <div class="brand-text"><span class="brand-name">SVE <span class="brand-badge">B2B</span></span><span class="brand-sub">Business Portal</span></div>
     </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="products.html">Products</a>
+      <a href="my-orders.html">My Orders</a>
+      <a href="my-complaints.html">Complaints</a>
+    </nav>
     <div class="nav-actions">
-      <span id="userEmail" style="font-size:.85rem;color:var(--slate-500);margin-right:8px;"></span>
+      <a href="cart.html" class="btn-ghost cart-badge cart-nav-link" data-cart-count="0">🛒 Cart</a>
       <button class="btn-outline" id="logoutBtn">Logout</button>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
     </div>
   </div>
 </header>
@@ -57,7 +58,7 @@
 <section class="dash-wrap">
   <div class="container">
     <h1 class="dash-hello">Hello, <span id="userName">…</span> 👋</h1>
-    <p class="dash-sub">Welcome to your distributor dashboard.</p>
+    <p class="dash-sub">Welcome to your partner dashboard.</p>
 
     <div class="dash-grid">
       <div class="stat-card">
@@ -65,25 +66,45 @@
         <div class="stat-val" id="statOrders">—</div>
       </div>
       <div class="stat-card">
-        <div class="stat-lbl">Pending Orders</div>
-        <div class="stat-val" id="statPending">—</div>
+        <div class="stat-lbl">Pending</div>
+        <div class="stat-val" id="statPending" style="color:#f59e0b;">—</div>
       </div>
       <div class="stat-card">
         <div class="stat-lbl">Total Spent</div>
         <div class="stat-val" id="statSpent">—</div>
       </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Open Complaints</div>
+        <div class="stat-val" id="statComplaints" style="color:#ef4444;">—</div>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <a href="products.html" class="qa-card">
+        <div class="qa-icon">📦</div>
+        <div class="qa-lbl">Browse Products</div>
+      </a>
+      <a href="cart.html" class="qa-card">
+        <div class="qa-icon">🛒</div>
+        <div class="qa-lbl">My Cart</div>
+      </a>
+      <a href="my-orders.html" class="qa-card">
+        <div class="qa-icon">🧾</div>
+        <div class="qa-lbl">My Orders</div>
+      </a>
+      <a href="complaint.html" class="qa-card">
+        <div class="qa-icon">⚠️</div>
+        <div class="qa-lbl">Raise Complaint</div>
+      </a>
     </div>
 
     <div class="panel">
       <div class="panel-head">
-        <h3>Your Recent Orders</h3>
-        <a href="#" class="btn-primary" style="padding:8px 16px;font-size:.85rem;">+ New Order</a>
+        <h3>Recent Orders</h3>
+        <a href="my-orders.html" class="btn-outline" style="padding:6px 14px;font-size:.82rem;">View All →</a>
       </div>
-      <div class="panel-body" id="ordersBody">
-        <div class="empty-state">
-          <div class="icon">📦</div>
-          <p>No orders yet. Start by placing your first order.</p>
-        </div>
+      <div class="panel-body p-0" id="ordersBody">
+        <div class="empty-dash"><div class="icon">📦</div><p>Loading…</p></div>
       </div>
     </div>
   </div>
@@ -97,6 +118,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script src="js/firebase-config.js"></script>
 <script src="js/main.js"></script>
+<script src="js/ui.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/dashboard.js"></script>
 </body>

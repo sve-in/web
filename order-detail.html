@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Order Details — SVE Business Portal</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-text"><span class="brand-name">SVE <span class="brand-badge">B2B</span></span><span class="brand-sub">Business Portal</span></div>
+    </a>
+    <div class="nav-actions">
+      <a href="my-orders.html" class="btn-outline">← My Orders</a>
+      <button class="btn-ghost" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="padding:40px 0;">
+  <div class="container" id="odContainer">
+    <div class="loading-block"><span class="spinner"></span> Loading…</div>
+  </div>
+</section>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  window.requireAuth(async function (profile) {
+    const id = new URLSearchParams(location.search).get('id');
+    const container = document.getElementById('odContainer');
+    if (!id) { container.innerHTML = '<div class="empty-pub"><h3>No order specified</h3></div>'; return; }
+
+    try {
+      const doc = await window.db.collection('orders').doc(id).get();
+      if (!doc.exists || doc.data().uid !== profile.uid) {
+        container.innerHTML = '<div class="empty-pub"><div class="icon">❓</div><h3>Order not found</h3></div>';
+        return;
+      }
+      const o = doc.data();
+      const steps = ['pending','processing','dispatched','delivered'];
+      const currentIdx = steps.indexOf(o.status || 'pending');
+      let timeline = '';
+      const labels = { pending: 'Order Placed', processing: 'Processing', dispatched: 'Dispatched', delivered: 'Delivered' };
+      steps.forEach(function(s, i){
+        const cls = i < currentIdx ? 'done' : (i === currentIdx ? 'current' : '');
+        timeline += '<div class="timeline-item ' + cls + '">'
+          + '<div class="tl-title">' + labels[s] + '</div>'
+          + '<div class="tl-time">' + (i <= currentIdx ? 'Done' : 'Pending') + '</div>'
+        + '</div>';
+      });
+      if (o.status === 'cancelled') {
+        timeline += '<div class="timeline-item current"><div class="tl-title" style="color:var(--red);">Cancelled</div></div>';
+      }
+
+      let items = '';
+      (o.items || []).forEach(function(it){
+        items += '<tr><td>' + window.escapeHtml(it.name) + '</td><td>' + it.qty + '</td><td>' + window.fmtMoney(it.price) + '</td><td>' + window.fmtMoney(it.price * it.qty) + '</td></tr>';
+      });
+      if (!items && o.product) items = '<tr><td>' + window.escapeHtml(o.product) + '</td><td>' + (o.quantity || '') + '</td><td>—</td><td>' + window.fmtMoney(o.total) + '</td></tr>';
+
+      container.innerHTML = '<div style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px;">'
+        + '<div><h1 style="font-size:1.4rem;font-weight:800;">' + window.escapeHtml(o.orderId || id) + '</h1>'
+        + '<p style="color:var(--slate-500);font-size:.9rem;margin-top:4px;">' + window.fmtDateTime(o.createdAt) + '</p></div>'
+        + '<span class="pill-status pill-' + (o.status || 'pending') + '" style="align-self:flex-start;padding:8px 16px;">' + (o.status || 'pending') + '</span>'
+      + '</div>'
+      + '<div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;" class="od-grid">'
+        + '<div>'
+          + '<div class="panel" style="background:white;border:1px solid var(--slate-100);border-radius:var(--radius);padding:20px;margin-bottom:16px;">'
+            + '<h3 style="font-size:1rem;font-weight:800;margin-bottom:14px;">Items</h3>'
+            + '<table class="cart-table"><thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr></thead><tbody>' + items + '</tbody></table>'
+            + '<div style="text-align:right;margin-top:14px;font-size:1.1rem;font-weight:800;">Total: ' + window.fmtMoney(o.total) + '</div>'
+          + '</div>'
+          + '<div class="panel" style="background:white;border:1px solid var(--slate-100);border-radius:var(--radius);padding:20px;">'
+            + '<h3 style="font-size:1rem;font-weight:800;margin-bottom:14px;">Delivery Address</h3>'
+            + '<div style="font-size:.9rem;color:var(--slate-700);line-height:1.65;">'
+              + '<strong>' + window.escapeHtml((o.shippingAddress && o.shippingAddress.name) || o.customerName || '') + '</strong><br/>'
+              + window.escapeHtml((o.shippingAddress && o.shippingAddress.address) || '') + '<br/>'
+              + window.escapeHtml((o.shippingAddress && o.shippingAddress.city) || '') + ', '
+              + window.escapeHtml((o.shippingAddress && o.shippingAddress.state) || '') + ' - '
+              + window.escapeHtml((o.shippingAddress && o.shippingAddress.pincode) || '') + '<br/>'
+              + '📞 ' + window.escapeHtml((o.shippingAddress && o.shippingAddress.phone) || o.phone || '')
+            + '</div>'
+          + '</div>'
+        + '</div>'
+        + '<div class="panel" style="background:white;border:1px solid var(--slate-100);border-radius:var(--radius);padding:20px;">'
+          + '<h3 style="font-size:1rem;font-weight:800;margin-bottom:14px;">Order Status</h3>'
+          + '<div class="timeline">' + timeline + '</div>'
+        + '</div>'
+      + '</div>';
+    } catch(e) {
+      console.error(e);
+      container.innerHTML = '<div class="empty-pub"><div class="icon">⚠️</div><h3>Error loading order</h3></div>';
+    }
+  });
+  document.getElementById('logoutBtn').addEventListener('click', function(){
+    if (confirm('Logout?')) window.sveLogout();
+  });
+</script>
+<style>@media(max-width:720px){ .od-grid{grid-template-columns:1fr !important;} }</style>
+</body>
+</html>

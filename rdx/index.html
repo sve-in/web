@@ -3,79 +3,235 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SVE Admin — Sign In</title>
-<meta name="robots" content="noindex, nofollow, noarchive" />
-<meta name="googlebot" content="noindex, nofollow" />
-<link rel="icon" href="../images/logo.png" />
+<title>Siddhi Vinayak Enterprises — B2B Detergent Distribution</title>
+<meta name="description" content="SVE Business Portal — wholesale detergents. Nikolux, Life Star, Sanjivni. Apply as distributor or create an account to order." />
+<meta name="keywords" content="SVE, detergent, wholesale, distributor, Nikolux, Life Star, Sanjivni" />
+<meta property="og:image" content="images/logo.png" />
+<link rel="icon" href="images/logo.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/admin.css" />
-<style>
-  .google-btn {
-    display: flex; align-items: center; justify-content: center; gap: 12px;
-    width: 100%; padding: 14px 20px;
-    background: #ffffff; color: #1f2937;
-    border: 1.5px solid #e5e7eb; border-radius: 8px;
-    font-size: .95rem; font-weight: 600;
-    transition: all .2s ease; cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0,0,0,.05);
-    margin-top: 8px;
-  }
-  .google-btn:hover {
-    background: #f9fafb; border-color: #d1d5db;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
-    transform: translateY(-1px);
-  }
-  .google-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
-  .google-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
-  .allowed-note {
-    margin-top: 20px; padding: 12px 14px;
-    background: rgba(59,130,246,.08); border: 1px solid rgba(59,130,246,.25);
-    border-radius: 8px; font-size: .78rem; color: #93c5fd; line-height: 1.55;
-  }
-  .allowed-note strong { color: #60a5fa; }
-  .allowed-note ul { list-style: none; padding: 0; margin: 6px 0 0; }
-  .allowed-note li { font-family: monospace; font-size: .76rem; padding: 2px 0; color: #bfdbfe; }
-</style>
+<link rel="stylesheet" href="css/main.css" />
 </head>
-<body class="admin-login-body">
+<body>
 
-<div class="admin-login-wrap">
-  <div class="admin-login-card">
-    <div class="admin-login-head">
-      <img src="../images/logo.png" alt="SVE" class="admin-logo" onerror="this.style.display='none'" />
-      <h1>SVE Admin</h1>
-      <p>Restricted access — authorized personnel only</p>
-    </div>
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-text">
+        <span class="brand-name">SVE <span class="brand-badge">B2B</span></span>
+        <span class="brand-sub" data-i18n="brand.tag">Business Portal</span>
+      </div>
+    </a>
 
-    <div id="adminError" class="alert alert-error" hidden></div>
-    <div id="adminInfo" class="alert alert-info" hidden></div>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html" class="active" data-i18n="nav.home">Home</a>
+      <a href="products.html" data-i18n="nav.products">Products</a>
+      <a href="about.html" data-i18n="nav.about">About</a>
+      <a href="contact.html" data-i18n="nav.contact">Contact</a>
+    </nav>
 
-    <button type="button" class="google-btn" id="googleLoginBtn">
-      <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-        <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-        <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-        <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
-      </svg>
-      <span class="btn-text">Sign in with Google</span>
-      <span class="btn-spinner" hidden></span>
-    </button>
-
-    <div class="allowed-note">
-      <strong>Only allowed accounts:</strong>
-      <ul>
-        <li>sve.raj.in@gmail.com</li>
-        <li>shidhivinayakindustry.svi@gmail.com</li>
-      </ul>
-    </div>
-
-    <div class="admin-login-foot">
-      <a href="../index.html">← Back to Portal</a>
+    <div class="nav-actions">
+      <button class="lang-toggle" id="langToggle" title="Switch language">
+        <span class="lang-en">EN</span>
+        <span class="lang-hi">हि</span>
+      </button>
+      <a href="cart.html" class="btn-ghost cart-badge cart-nav-link" data-cart-count="0" title="Cart">🛒 Cart</a>
+      <a href="login.html" class="btn-ghost" data-i18n="nav.login">Login</a>
+      <a href="signup.html" class="btn-primary" data-i18n="nav.signup">Sign Up</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </div>
-</div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="container hero-inner">
+    <div class="hero-left fade-in">
+      <span class="badge" data-i18n="hero.badge">Wholesale Detergent Supplier</span>
+      <h1 class="hero-title" data-i18n="hero.title">
+        Powerful Clean.<br/>
+        <span class="grad-text">Trusted Wholesale.</span>
+      </h1>
+      <p class="hero-sub" data-i18n="hero.sub">
+        SVE Business Portal — order premium detergents (Nikolux, Life Star, Sanjivni) at wholesale pricing. Verified partners only.
+      </p>
+      <div class="hero-cta">
+        <a href="signup.html" class="btn-primary btn-lg" data-i18n="hero.ctaPrimary">Create Account →</a>
+        <a href="apply.html" class="btn-outline btn-lg" data-i18n="hero.ctaSecondary">Apply as Distributor</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">15+</div><div class="stat-lbl" data-i18n="hero.stat1">Years in Industry</div></div>
+        <div class="stat"><div class="stat-num">50+</div><div class="stat-lbl" data-i18n="hero.stat2">Active Partners</div></div>
+        <div class="stat"><div class="stat-num">3</div><div class="stat-lbl" data-i18n="hero.stat3">Premium Brands</div></div>
+        <div class="stat"><div class="stat-num">1M+</div><div class="stat-lbl" data-i18n="hero.stat4">Happy Customers</div></div>
+      </div>
+    </div>
+
+    <div class="hero-right fade-in">
+      <div class="hero-card">
+        <div class="hero-card-head">
+          <span class="dot-live"></span>
+          <span data-i18n="hero.cardLive">Applications Open 2026</span>
+        </div>
+        <h3 data-i18n="hero.cardTitle">Two Ways to Start</h3>
+        <p data-i18n="hero.cardText">Sign up instantly with phone OTP or apply as a full distributor with business details.</p>
+        <a href="signup.html" class="btn-primary btn-block" data-i18n="hero.cardCtaPrimary">Sign Up Now →</a>
+        <a href="apply.html" class="btn-outline btn-block" style="margin-top:8px;" data-i18n="hero.cardCtaSecondary">Full Distributor Application</a>
+        <ul class="hero-card-list">
+          <li>✓ <span data-i18n="hero.cardLi1">Wholesale pricing</span></li>
+          <li>✓ <span data-i18n="hero.cardLi2">GST invoicing</span></li>
+          <li>✓ <span data-i18n="hero.cardLi3">Pan-India delivery</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="trust-bar">
+  <div class="container trust-inner">
+    <div class="trust-item"><span class="trust-icon">🏆</span> <span data-i18n="trust.1">ISO Certified</span></div>
+    <div class="trust-item"><span class="trust-icon">🧪</span> <span data-i18n="trust.2">Lab Tested</span></div>
+    <div class="trust-item"><span class="trust-icon">🚚</span> <span data-i18n="trust.3">Pan-India Delivery</span></div>
+    <div class="trust-item"><span class="trust-icon">🤝</span> <span data-i18n="trust.4">Distributor First</span></div>
+  </div>
+</section>
+
+<!-- BRANDS -->
+<section class="section" id="brands">
+  <div class="container">
+    <div class="section-head fade-in">
+      <h2 data-i18n="brands.title">Our Brands</h2>
+      <p data-i18n="brands.sub">Three proven detergent lines trusted across India.</p>
+    </div>
+
+    <div class="brands-grid">
+      <article class="brand-card fade-in">
+        <div class="brand-badge-lg">NIKOLUX</div>
+        <h3>Nikolux</h3>
+        <p data-i18n="brands.nikolux.d">Premium detergent powder for sparkling clean clothes. High-foam formula with superior stain removal.</p>
+        <ul class="brand-specs">
+          <li><span data-i18n="brands.sku">SKUs</span>: 1kg, 2kg, 4kg, 8kg, 25kg</li>
+          <li><span data-i18n="brands.tier">Tier</span>: <strong>Premium</strong></li>
+        </ul>
+      </article>
+
+      <article class="brand-card fade-in">
+        <div class="brand-badge-lg">LIFE STAR</div>
+        <h3>Life Star</h3>
+        <p data-i18n="brands.lifestar.d">Economical detergent for everyday use. Best value-for-money for high-volume retail markets.</p>
+        <ul class="brand-specs">
+          <li><span data-i18n="brands.sku">SKUs</span>: 500g, 1kg, 2kg</li>
+          <li><span data-i18n="brands.tier">Tier</span>: <strong>Value</strong></li>
+        </ul>
+      </article>
+
+      <article class="brand-card fade-in">
+        <div class="brand-badge-lg">SANJIVNI</div>
+        <h3>Sanjivni</h3>
+        <p data-i18n="brands.sanjivni.d">Herbal-based detergent for sensitive fabrics. Plant-derived formula trusted for baby clothes.</p>
+        <ul class="brand-specs">
+          <li><span data-i18n="brands.sku">SKUs</span>: 1kg, 2kg</li>
+          <li><span data-i18n="brands.tier">Tier</span>: <strong>Herbal</strong></li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="center mt-32">
+      <a href="products.html" class="btn-outline" data-i18n="brands.viewAll">View All Products →</a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-head fade-in">
+      <h2 data-i18n="how.title">How It Works</h2>
+      <p data-i18n="how.sub">Get ordering in 3 simple steps.</p>
+    </div>
+    <div class="steps">
+      <div class="step fade-in">
+        <div class="step-num">01</div>
+        <h3 data-i18n="how.s1t">Create Account</h3>
+        <p data-i18n="how.s1d">Sign up with phone OTP and set your password in 2 minutes.</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">02</div>
+        <h3 data-i18n="how.s2t">Browse &amp; Order</h3>
+        <p data-i18n="how.s2d">Pick products, add to cart, place your wholesale order.</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">03</div>
+        <h3 data-i18n="how.s3t">Track &amp; Receive</h3>
+        <p data-i18n="how.s3d">Track your order status live, receive with GST invoice.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-banner">
+  <div class="container cta-inner fade-in">
+    <div>
+      <h2 data-i18n="cta.title">Ready to grow with SVE?</h2>
+      <p data-i18n="cta.sub">Join hundreds of successful partners across India.</p>
+    </div>
+    <div class="cta-actions">
+      <a href="signup.html" class="btn-primary btn-lg" data-i18n="cta.btn">Sign Up Now →</a>
+      <a href="apply.html" class="btn-outline-light btn-lg" data-i18n="cta.apply">Full Application</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <div class="brand footer-brand">
+        <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+        <div class="brand-text"><span class="brand-name">SVE</span><span class="brand-sub">Business Portal</span></div>
+      </div>
+      <p class="footer-desc" data-i18n="footer.desc">Official B2B portal of Siddhi Vinayak Enterprises — manufacturer of Nikolux, Life Star &amp; Sanjivni detergents.</p>
+    </div>
+    <div>
+      <h4 data-i18n="footer.quick">Quick Links</h4>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 data-i18n="footer.account">Account</h4>
+      <ul class="footer-links">
+        <li><a href="signup.html">Sign Up</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="apply.html">Apply as Distributor</a></li>
+        <li><a href="apply-status.html">Check Status</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 data-i18n="footer.legal">Legal</h4>
+      <ul class="footer-links">
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="terms.html">Terms of Service</a></li>
+        <li><a href="refund.html">Refund Policy</a></li>
+        <li><a href="shipping.html">Shipping Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container footer-bottom-inner">
+      <p>© <span id="year"></span> Siddhi Vinayak Enterprises. <span data-i18n="footer.rights">All rights reserved.</span></p>
+      <p class="tiny"><a href="https://www.sveindia.mywire.org" target="_blank" rel="noopener" data-i18n="footer.mainSite">Visit Main Website →</a></p>
+    </div>
+  </div>
+</footer>
 
 <div id="toastBox" class="toast-box"></div>
 
@@ -83,7 +239,10 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-<script src="../js/firebase-config.js"></script>
-<script src="js/admin-auth.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+<script src="js/sheets.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>

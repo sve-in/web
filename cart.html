@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cart — SVE Business Portal</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/main.css" />
+<style>
+  .cart-wrap { padding: 40px 0 80px; }
+  .cart-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 28px; align-items: start; }
+  @media(max-width:900px){ .cart-layout{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-text"><span class="brand-name">SVE <span class="brand-badge">B2B</span></span><span class="brand-sub">Business Portal</span></div>
+    </a>
+    <div class="nav-actions">
+      <a href="products.html" class="btn-outline">← Continue Shopping</a>
+    </div>
+  </div>
+</header>
+
+<section class="cart-wrap">
+  <div class="container">
+    <h1 style="font-size:1.6rem;font-weight:800;margin-bottom:24px;">Your Cart</h1>
+    <div id="cartContent"></div>
+  </div>
+</section>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/cart.js"></script>
+</body>
+</html>

@@ -4,34 +4,20 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Apply as Distributor — SVE Business Portal</title>
-<meta name="description" content="Apply to become an authorized SVE distributor. Get wholesale pricing on Nikolux, Life Star & Sanjivni." />
-<meta name="robots" content="index, follow" />
+<meta name="description" content="Apply to become an authorized SVE distributor." />
 <link rel="icon" href="images/logo.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/main.css" />
 <style>
-  .apply-wrap { padding: 60px 0 80px; background: linear-gradient(180deg,#f8fafc 0%, #eff6ff 100%); min-height: calc(100vh - 72px); }
+  .apply-wrap { padding: 60px 0 80px; background: linear-gradient(180deg,#f8fafc,#eff6ff); min-height: calc(100vh - 72px); }
   .apply-card { background: white; border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow-lg); border: 1px solid var(--slate-100); max-width: 780px; margin: 0 auto; }
-  .apply-head { text-align: center; margin-bottom: 32px; }
+  .apply-head { text-align: center; margin-bottom: 24px; }
   .apply-head h1 { font-size: clamp(1.6rem,3vw,2.2rem); font-weight: 800; letter-spacing: -.02em; margin-bottom: 8px; }
   .apply-head p { color: var(--slate-500); font-size: .98rem; }
-  .apply-progress { display: flex; justify-content: center; gap: 8px; margin: 24px 0; }
-  .apply-progress span { width: 40px; height: 4px; border-radius: 999px; background: var(--slate-100); }
-  .apply-progress span.active { background: var(--blue-500); }
   .form-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
-  .upload-box { border: 2px dashed var(--slate-300); border-radius: var(--radius); padding: 24px; text-align: center; cursor: pointer; transition: var(--transition); background: var(--slate-50); }
-  .upload-box:hover { border-color: var(--blue-500); background: var(--blue-50); }
-  .upload-box.has-file { border-color: var(--green); background: #f0fdf4; }
-  .upload-box input { display: none; }
-  .upload-icon { font-size: 2rem; margin-bottom: 8px; }
-  .upload-txt { font-weight: 600; color: var(--slate-700); font-size: .92rem; }
-  .upload-hint { font-size: .78rem; color: var(--slate-500); margin-top: 4px; }
-  .file-name { margin-top: 12px; font-size: .85rem; color: var(--green); font-weight: 600; display: none; }
-  .upload-box.has-file .file-name { display: block; }
-
-  /* Success screen */
+  .step-panel { display: none; }
+  .step-panel.active { display: block; }
   .success-screen { text-align: center; padding: 30px 10px; display: none; }
   .success-screen.show { display: block; }
   .success-icon { font-size: 4rem; margin-bottom: 16px; }
@@ -39,30 +25,24 @@
   .success-screen p { color: var(--slate-500); margin-bottom: 20px; }
   .app-id-box { background: var(--blue-50); border: 2px dashed var(--blue-400); border-radius: var(--radius); padding: 20px; margin: 24px 0; }
   .app-id-lbl { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--blue-600); font-weight: 700; margin-bottom: 6px; }
-  .app-id-val { font-size: 1.5rem; font-weight: 800; color: var(--slate-900); letter-spacing: .02em; font-family: 'SF Mono', Consolas, monospace; word-break: break-all; }
+  .app-id-val { font-size: 1.5rem; font-weight: 800; color: var(--slate-900); letter-spacing: .02em; font-family: monospace; word-break: break-all; }
   .copy-btn { margin-top: 12px; }
-  .success-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
 </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
 <header class="navbar" id="navbar">
   <div class="container nav-inner">
     <a href="index.html" class="brand">
       <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
-      <div class="brand-text">
-        <span class="brand-name">SVE <span class="brand-badge">B2B</span></span>
-        <span class="brand-sub">Business Portal</span>
-      </div>
+      <div class="brand-text"><span class="brand-name">SVE <span class="brand-badge">B2B</span></span><span class="brand-sub">Business Portal</span></div>
     </a>
     <nav class="nav-links" id="navLinks">
-      <a href="index.html" data-i18n="nav.home">Home</a>
-      <a href="apply-status.html" data-i18n="nav.checkStatus">Check Status</a>
-      <a href="login.html" data-i18n="nav.login">Login</a>
+      <a href="index.html">Home</a>
+      <a href="apply-status.html">Check Status</a>
+      <a href="login.html">Login</a>
     </nav>
     <div class="nav-actions">
-      <button class="lang-toggle" id="langToggle"><span class="lang-en">EN</span><span class="lang-hi">हि</span></button>
       <a href="apply-status.html" class="btn-ghost">Check Status</a>
       <a href="login.html" class="btn-primary">Login</a>
       <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
@@ -74,54 +54,51 @@
   <div class="container">
     <div class="apply-card">
 
-      <!-- FORM -->
       <div id="formSection">
         <div class="apply-head">
           <h1>Distributor Application</h1>
           <p>Fill in your business details. Takes about 2 minutes.</p>
         </div>
 
-        <div class="apply-progress">
-          <span class="active"></span><span></span><span></span>
+        <div class="steps-bar">
+          <div class="step-item"><div class="num active" data-stepnum="1">1</div><div class="lbl">Details</div></div>
+          <div class="line" data-stepline="1"></div>
+          <div class="step-item"><div class="num" data-stepnum="2">2</div><div class="lbl">Verify Phone</div></div>
+          <div class="line" data-stepline="2"></div>
+          <div class="step-item"><div class="num" data-stepnum="3">3</div><div class="lbl">Password</div></div>
         </div>
 
-        <form id="applyForm" novalidate>
-
-          <!-- Section: Personal -->
-          <h3 style="font-size:1rem;font-weight:700;color:var(--slate-700);margin:20px 0 12px;">1. Personal Details</h3>
+        <!-- STEP 1 -->
+        <div class="step-panel active" data-step="1">
+          <h3 style="font-size:1rem;font-weight:700;color:var(--slate-700);margin-bottom:12px;">Personal &amp; Business Details</h3>
           <div class="form-grid">
             <div class="form-row-2">
               <div class="field">
                 <label>Full Name <span class="req">*</span></label>
-                <input type="text" id="name" required autocomplete="name" placeholder="e.g. Rajesh Kumar" />
-                <span class="err">Please enter your name</span>
+                <input type="text" id="name" required placeholder="e.g. Rajesh Kumar" />
+                <span class="err"></span>
               </div>
               <div class="field">
                 <label>Phone Number <span class="req">*</span></label>
-                <input type="tel" id="phone" required autocomplete="tel" placeholder="10-digit mobile" maxlength="10" inputmode="numeric" />
-                <span class="err">Enter valid 10-digit mobile</span>
+                <input type="tel" id="phone" required maxlength="10" inputmode="numeric" placeholder="10-digit mobile" />
+                <span class="err"></span>
               </div>
             </div>
             <div class="field">
               <label>Email Address <span class="req">*</span></label>
-              <input type="email" id="email" required autocomplete="email" placeholder="you@business.com" />
-              <span class="err">Enter a valid email</span>
+              <input type="email" id="email" required placeholder="you@business.com" />
+              <span class="err"></span>
             </div>
-          </div>
-
-          <!-- Section: Business -->
-          <h3 style="font-size:1rem;font-weight:700;color:var(--slate-700);margin:28px 0 12px;">2. Business Details</h3>
-          <div class="form-grid">
             <div class="field">
               <label>Business / Firm Name <span class="req">*</span></label>
-              <input type="text" id="businessName" required autocomplete="organization" placeholder="e.g. Kumar Traders" />
-              <span class="err">Please enter business name</span>
+              <input type="text" id="businessName" required placeholder="e.g. Kumar Traders" />
+              <span class="err"></span>
             </div>
             <div class="form-row-2">
               <div class="field">
                 <label>City <span class="req">*</span></label>
                 <input type="text" id="city" required placeholder="e.g. Jaipur" />
-                <span class="err">Please enter city</span>
+                <span class="err"></span>
               </div>
               <div class="field">
                 <label>State <span class="req">*</span></label>
@@ -136,7 +113,7 @@
                   <option>Telangana</option><option>Uttar Pradesh</option><option>Uttarakhand</option>
                   <option>West Bengal</option><option>Other</option>
                 </select>
-                <span class="err">Please select state</span>
+                <span class="err"></span>
               </div>
             </div>
             <div class="form-row-2">
@@ -150,10 +127,10 @@
                   <option value="super-stockist">Super Stockist</option>
                   <option value="other">Other</option>
                 </select>
-                <span class="err">Please select business type</span>
+                <span class="err"></span>
               </div>
               <div class="field">
-                <label>GST Number <span class="hint" style="font-weight:400;color:var(--slate-500);">(optional)</span></label>
+                <label>GST Number (optional)</label>
                 <input type="text" id="gst" placeholder="15-character GSTIN" maxlength="15" style="text-transform:uppercase;" />
               </div>
             </div>
@@ -167,60 +144,91 @@
                 <option value="1l-5l">₹1,00,000 – ₹5,00,000</option>
                 <option value="above-5l">Above ₹5,00,000</option>
               </select>
-              <span class="err">Please select volume range</span>
+              <span class="err"></span>
+            </div>
+            <div class="field">
+              <label>Why do you want to join SVE?</label>
+              <textarea id="message" placeholder="Tell us briefly about your business…"></textarea>
             </div>
           </div>
 
-          <!-- Section: Document -->
-          <h3 style="font-size:1rem;font-weight:700;color:var(--slate-700);margin:28px 0 12px;">3. Upload Document</h3>
-          <p style="font-size:.85rem;color:var(--slate-500);margin-bottom:12px;">Upload GST certificate OR ID proof (Aadhaar / PAN). Max 5MB. JPG, PNG or PDF.</p>
+          <div id="recaptchaContainer" style="margin:16px 0;"></div>
+          <div id="step1Err" class="alert alert-error" hidden></div>
 
-          <label class="upload-box" id="uploadBox">
-            <input type="file" id="docFile" accept="image/*,application/pdf" />
-            <div class="upload-icon">📄</div>
-            <div class="upload-txt">Click to upload or drag &amp; drop</div>
-            <div class="upload-hint">JPG, PNG, PDF — max 5MB</div>
-            <div class="file-name" id="fileName"></div>
-          </label>
-
-          <!-- Section: Message -->
-          <h3 style="font-size:1rem;font-weight:700;color:var(--slate-700);margin:28px 0 12px;">4. Anything Else?</h3>
-          <div class="field">
-            <label>Why do you want to join SVE?</label>
-            <textarea id="message" placeholder="Tell us briefly about your business, existing brands, coverage area..."></textarea>
-          </div>
-
-          <!-- Errors -->
-          <div id="formError" class="alert alert-error" hidden></div>
-
-          <!-- Actions -->
           <div class="form-foot">
             <a href="index.html" class="btn-ghost">← Cancel</a>
-            <button type="submit" class="btn-primary btn-lg" id="submitBtn">
+            <button class="btn-primary btn-lg" id="sendOtpBtn">
+              <span class="btn-text">Send OTP →</span>
+              <span class="btn-spinner" hidden></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step-panel" data-step="2">
+          <p style="text-align:center;color:var(--slate-500);font-size:.9rem;margin-bottom:10px;">
+            Enter the 6-digit code sent to <strong id="phoneEcho">—</strong>
+          </p>
+          <div class="otp-row">
+            <input type="tel" maxlength="1" class="otp-digit" />
+            <input type="tel" maxlength="1" class="otp-digit" />
+            <input type="tel" maxlength="1" class="otp-digit" />
+            <input type="tel" maxlength="1" class="otp-digit" />
+            <input type="tel" maxlength="1" class="otp-digit" />
+            <input type="tel" maxlength="1" class="otp-digit" />
+          </div>
+          <div id="step2Err" class="alert alert-error" hidden></div>
+          <div class="form-foot" style="justify-content:center;flex-direction:column;">
+            <button class="btn-primary btn-lg" id="verifyOtpBtn" style="width:100%;">
+              <span class="btn-text">Verify OTP →</span>
+              <span class="btn-spinner" hidden></span>
+            </button>
+            <button class="btn-ghost" id="resendBtn" disabled style="margin-top:10px;">Resend in <span id="resendTimer">30</span>s</button>
+            <button class="btn-ghost" id="backToStep1" style="margin-top:6px;">← Edit details</button>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="step-panel" data-step="3">
+          <h3 style="font-size:1rem;font-weight:700;color:var(--slate-700);margin-bottom:12px;">Set your password</h3>
+          <p style="font-size:.85rem;color:var(--slate-500);margin-bottom:14px;">After admin approves, you'll log in with your email and this password.</p>
+
+          <div class="field" style="margin-bottom:14px;">
+            <label>Password <span class="req">*</span></label>
+            <div style="position:relative;">
+              <input type="password" id="password" placeholder="Min 8 chars, 1 upper, 1 number" style="padding-right:44px;" />
+              <button type="button" class="pass-toggle" id="togglePass" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--slate-500);">👁</button>
+            </div>
+            <span class="hint" id="pwStrength" style="font-size:.78rem;color:var(--slate-500);"></span>
+          </div>
+          <div class="field" style="margin-bottom:14px;">
+            <label>Confirm Password <span class="req">*</span></label>
+            <input type="password" id="password2" placeholder="Re-enter password" />
+          </div>
+
+          <div id="step3Err" class="alert alert-error" hidden></div>
+
+          <div class="form-foot">
+            <button class="btn-ghost" id="backToStep2">← Back</button>
+            <button class="btn-primary btn-lg" id="submitBtn">
               <span class="btn-text">Submit Application →</span>
               <span class="btn-spinner" hidden></span>
             </button>
           </div>
-        </form>
+        </div>
       </div>
 
       <!-- SUCCESS -->
       <div class="success-screen" id="successSection">
         <div class="success-icon">✅</div>
         <h2>Application Submitted!</h2>
-        <p>Thank you! Our team will review your application and get back within 24–48 hours.</p>
-
+        <p>Our team will review and get back within 24–48 hours. You'll receive login access on approval.</p>
         <div class="app-id-box">
           <div class="app-id-lbl">Your Application ID</div>
           <div class="app-id-val" id="appIdVal">—</div>
           <button class="btn-outline copy-btn" id="copyAppId">📋 Copy ID</button>
         </div>
-
-        <p style="font-size:.9rem;color:var(--slate-500);">
-          Save this ID — you'll need it to check your application status.
-        </p>
-
-        <div class="success-actions">
+        <div class="success-actions" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
           <a href="apply-status.html" class="btn-primary">Check Status →</a>
           <a href="index.html" class="btn-outline">Back to Home</a>
         </div>
@@ -233,7 +241,6 @@
 <footer class="footer" style="padding:32px 0;">
   <div class="container footer-bottom-inner">
     <p>© <span id="year"></span> Siddhi Vinayak Enterprises.</p>
-    <p class="tiny"><a href="https://www.sveindia.mywire.org" target="_blank" rel="noopener" style="color:var(--blue-400)">Visit Main Website →</a></p>
   </div>
 </footer>
 
@@ -245,6 +252,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script src="js/firebase-config.js"></script>
 <script src="js/main.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/sheets.js"></script>
 <script src="js/apply.js"></script>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>

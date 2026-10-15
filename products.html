@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Products — SVE Business Portal</title>
+<meta name="description" content="Browse Nikolux, Life Star & Sanjivni detergents. Wholesale pricing for verified partners." />
+<link rel="icon" href="images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-text"><span class="brand-name">SVE <span class="brand-badge">B2B</span></span><span class="brand-sub">Business Portal</span></div>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="products.html" class="active">Products</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="cart.html" class="btn-ghost cart-badge" data-cart-count="0">🛒 Cart</a>
+      <a href="dashboard.html" class="btn-ghost">Dashboard</a>
+      <a href="login.html" class="btn-primary">Login</a>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="padding-top:40px;">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:32px;">
+      <h1 style="font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;letter-spacing:-.02em;margin-bottom:8px;">Our Products</h1>
+      <p style="color:var(--slate-500);">Wholesale catalog for verified partners.</p>
+    </div>
+
+    <div class="filters-bar">
+      <input type="text" id="searchBox" placeholder="Search product…" />
+      <select id="brandFilter">
+        <option value="">All Brands</option>
+      </select>
+      <select id="sortBy">
+        <option value="name">Sort: Name</option>
+        <option value="priceAsc">Price: Low → High</option>
+        <option value="priceDesc">Price: High → Low</option>
+      </select>
+      <button class="btn-outline" id="clearFilters">Clear</button>
+    </div>
+
+    <div class="product-grid" id="productGrid">
+      <div class="loading-block"><span class="spinner"></span> Loading products…</div>
+    </div>
+  </div>
+</section>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/products.js"></script>
+</body>
+</html>

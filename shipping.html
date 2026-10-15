@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shipping Policy — SVE Business Portal</title>
+<link rel="icon" href="images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-text"><span class="brand-name">SVE <span class="brand-badge">B2B</span></span><span class="brand-sub">Business Portal</span></div>
+    </a>
+    <div class="nav-actions"><a href="index.html" class="btn-outline">← Home</a></div>
+  </div>
+</header>
+
+<div class="legal-wrap">
+  <h1>Shipping Policy</h1>
+  <p class="updated">Last updated: <span id="updDate"></span></p>
+
+  <h2>1. Dispatch Time</h2>
+  <p>Orders are dispatched within <strong>24–48 working hours</strong> of confirmation and payment (for prepaid orders).</p>
+
+  <h2>2. Delivery Timeline</h2>
+  <ul>
+    <li>Metro cities: 2–4 working days</li>
+    <li>Tier-2/3 cities: 3–6 working days</li>
+    <li>Remote areas: 5–10 working days</li>
+  </ul>
+
+  <h2>3. Shipping Charges</h2>
+  <p>Shipping is calculated at order confirmation based on weight, volume, and delivery pincode. Bulk orders may qualify for free shipping — contact your account manager.</p>
+
+  <h2>4. Tracking</h2>
+  <p>Tracking details are shared on WhatsApp / email after dispatch. You can also view status in <a href="my-orders.html" style="color:var(--blue-600);font-weight:600;">My Orders</a>.</p>
+
+  <h2>5. Delivery Address</h2>
+  <p>Please ensure the delivery address and phone number are correct. Re-delivery charges may apply for failed deliveries due to incorrect details.</p>
+
+  <h2>6. Damage in Transit</h2>
+  <p>Inspect the package on delivery. Report damage within 48 hours with photos via the Complaints portal.</p>
+</div>
+
+<div id="toastBox" class="toast-box"></div>
+<script>document.getElementById('updDate').textContent = new Date().toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'});</script>
+</body>
+</html>

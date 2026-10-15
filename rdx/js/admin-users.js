@@ -24,7 +24,7 @@
       render();
     } catch (e) {
       console.error(e);
-      body.innerHTML = '<div class="empty"><div class="ic">⚠️</div>Failed to load users</div>';
+      body.innerHTML = '<div class="empty"><div class="ic">⚠️</div>Failed to load</div>';
     }
   }
 
@@ -33,11 +33,10 @@
     const q = (document.getElementById('searchBox').value || '').toLowerCase().trim();
     let list = ALL;
     if (q) list = list.filter(function (u) {
-      return ((u.name || '') + ' ' + (u.email || '') + ' ' + (u.phone || '')).toLowerCase().indexOf(q) !== -1;
+      return ((u.name || '') + ' ' + (u.email || '') + ' ' + (u.phone || '') + ' ' + (u.businessName || '')).toLowerCase().indexOf(q) !== -1;
     });
-
     if (!list.length) {
-      body.innerHTML = '<div class="empty"><div class="ic">👥</div><p>No users yet</p></div>';
+      body.innerHTML = '<div class="empty"><div class="ic">👥</div><p>No users</p></div>';
       return;
     }
     let html = '<table class="admin-table"><thead><tr>'
@@ -51,10 +50,11 @@
         + '<td>' + (u.phone || '—') + '</td>'
         + '<td>' + (u.city || '—') + '</td>'
         + '<td><span class="pill pill-' + (u.status || 'active') + '">' + (u.status || 'active') + '</span></td>'
-        + '<td><div class="row-actions">'
+        + '<td><div class="row-actions" style="display:flex;gap:4px;flex-wrap:wrap;">'
           + (u.status === 'active'
               ? '<button class="btn-danger btn-sm" data-suspend="' + u._id + '">Suspend</button>'
               : '<button class="btn-success btn-sm" data-activate="' + u._id + '">Activate</button>')
+          + '<button class="btn-outline btn-sm" data-reset="' + u._id + '">Reset PW</button>'
         + '</div></td>'
         + '</tr>';
     });
@@ -80,6 +80,16 @@
         } catch (e) { window.adminToast('Failed: ' + e.message, 'error'); }
       });
     });
+    body.querySelectorAll('[data-reset]').forEach(function (b) {
+      b.addEventListener('click', async function () {
+        const u = ALL.find(function (x) { return x._id === b.dataset.reset; });
+        if (!u) return;
+        if (!confirm('Send password reset email to ' + u.email + '?')) return;
+        try {
+          await window.auth.sendPasswordResetEmail(u.email);
+          window.adminToast('Reset email sent to ' + u.email, 'success');
+        } catch (e) { window.adminToast('Failed: ' + e.message, 'error'); }
+      });
+    });
   }
-
 })();

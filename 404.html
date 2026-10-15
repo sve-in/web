@@ -14,6 +14,21 @@
 </style>
 </head>
 <body>
+
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-text"><span class="brand-name">SVE <span class="brand-badge">B2B</span></span><span class="brand-sub">Business Portal</span></div>
+    </a>
+    <div class="nav-actions">
+      <a href="products.html" class="btn-ghost">Products</a>
+      <a href="cart.html" class="btn-ghost cart-badge" data-cart-count="0">🛒 Cart</a>
+      <a href="login.html" class="btn-primary">Login</a>
+    </div>
+  </div>
+</header>
+
 <section class="notfound">
   <div>
     <h1>404</h1>
@@ -22,5 +37,15 @@
     <a href="index.html" class="btn-primary">← Back to Home</a>
   </div>
 </section>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

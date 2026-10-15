@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Complaints — SVE Business Portal</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-text"><span class="brand-name">SVE <span class="brand-badge">B2B</span></span><span class="brand-sub">Business Portal</span></div>
+    </a>
+    <div class="nav-actions">
+      <a href="complaint.html" class="btn-primary">+ New Complaint</a>
+      <button class="btn-ghost" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="padding:40px 0;">
+  <div class="container">
+    <h1 style="font-size:1.6rem;font-weight:800;margin-bottom:24px;">My Complaints</h1>
+    <div id="list"><div class="loading-block"><span class="spinner"></span> Loading…</div></div>
+  </div>
+</section>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  window.requireAuth(async function (profile) {
+    const wrap = document.getElementById('list');
+    try {
+      const snap = await window.db.collection('complaints').where('uid','==',profile.uid).orderBy('createdAt','desc').limit(100).get();
+      const list = [];
+      snap.forEach(function(d){ list.push(d.data()); });
+      if (!list.length) {
+        wrap.innerHTML = '<div class="empty-pub"><div class="icon">📭</div><h3>No complaints yet</h3><p>All good!</p><a href="complaint.html" class="btn-primary" style="margin-top:16px;">Raise Complaint</a></div>';
+        return;
+      }
+      let html = '';
+      list.forEach(function(c){
+        html += '<div class="complaint-card">'
+          + '<div class="complaint-head">'
+            + '<span class="complaint-id">' + window.escapeHtml(c.complaintId) + '</span>'
+            + '<span class="pill-status pill-' + (c.status || 'open').replace(/\s+/g,'-') + '">' + (c.status || 'open') + '</span>'
+          + '</div>'
+          + '<div class="complaint-title">' + window.escapeHtml(c.subject) + '</div>'
+          + '<div class="complaint-desc">' + window.escapeHtml(c.message).slice(0, 220) + (c.message && c.message.length > 220 ? '…' : '') + '</div>'
+          + '<div class="complaint-meta">'
+            + '<span>🏷 ' + window.escapeHtml(c.type || '—') + '</span>'
+            + (c.orderId ? '<span>📦 ' + window.escapeHtml(c.orderId) + '</span>' : '')
+            + '<span>📅 ' + window.fmtDateTime(c.createdAt) + '</span>'
+          + '</div>'
+        + '</div>';
+      });
+      wrap.innerHTML = html;
+    } catch(e) {
+      console.error(e);
+      wrap.innerHTML = '<div class="empty-pub"><div class="icon">⚠️</div><h3>Error loading complaints</h3></div>';
+    }
+  });
+  document.getElementById('logoutBtn').addEventListener('click', function(){ if (confirm('Logout?')) window.sveLogout(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Terms of Service — SVE Business Portal</title>
+<link rel="icon" href="images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-text"><span class="brand-name">SVE <span class="brand-badge">B2B</span></span><span class="brand-sub">Business Portal</span></div>
+    </a>
+    <div class="nav-actions"><a href="index.html" class="btn-outline">← Home</a></div>
+  </div>
+</header>
+
+<div class="legal-wrap">
+  <h1>Terms of Service</h1>
+  <p class="updated">Last updated: <span id="updDate"></span></p>
+
+  <p>By accessing or using the SVE Business Portal (buy.sveindia.mywire.org), you agree to these Terms.</p>
+
+  <h2>1. Eligibility</h2>
+  <p>Portal access is limited to verified business partners (retailers, wholesalers, distributors) approved by SVE. Applications are reviewed at our discretion.</p>
+
+  <h2>2. Account Responsibility</h2>
+  <ul>
+    <li>You are responsible for keeping your password confidential.</li>
+    <li>All activity under your account is your responsibility.</li>
+    <li>Notify us immediately of unauthorised access.</li>
+  </ul>
+
+  <h2>3. Orders & Payment</h2>
+  <ul>
+    <li>Orders are subject to stock availability and confirmation.</li>
+    <li>Prices are subject to change without prior notice for future orders.</li>
+    <li>Payment terms (prepaid / credit) are communicated at order time.</li>
+    <li>GST invoices are issued per Indian tax regulations.</li>
+  </ul>
+
+  <h2>4. Shipping & Delivery</h2>
+  <p>Delivery timelines are estimates. Title and risk pass to you upon dispatch from our facility. Report damaged or short shipments within 48 hours.</p>
+
+  <h2>5. Returns & Refunds</h2>
+  <p>See our <a href="refund.html" style="color:var(--blue-600);font-weight:600;">Refund Policy</a> for details.</p>
+
+  <h2>6. Prohibited Conduct</h2>
+  <ul>
+    <li>Re-selling SVE products outside authorised territory without permission.</li>
+    <li>Tampering with the portal, attempting unauthorised access.</li>
+    <li>Using the portal for unlawful purposes.</li>
+  </ul>
+
+  <h2>7. Limitation of Liability</h2>
+  <p>SVE's liability for any claim is limited to the invoice value of the affected order. We are not liable for indirect or consequential damages.</p>
+
+  <h2>8. Changes</h2>
+  <p>We may update these Terms. Continued use after changes constitutes acceptance.</p>
+
+  <h2>9. Governing Law</h2>
+  <p>These Terms are governed by Indian law. Disputes are subject to the exclusive jurisdiction of courts at our place of business.</p>
+
+  <h2>10. Contact</h2>
+  <p>Questions? See our <a href="contact.html" style="color:var(--blue-600);font-weight:600;">Contact page</a>.</p>
+</div>
+
+<div id="toastBox" class="toast-box"></div>
+<script>document.getElementById('updDate').textContent = new Date().toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'});</script>
+</body>
+</html>

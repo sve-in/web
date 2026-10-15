@@ -6,11 +6,12 @@
   if (!window.requireAdmin) return;
 
   window.requireAdmin(async function (profile) {
+    document.getElementById('adminEmail').textContent = profile.email;
+
     const form = document.getElementById('settingsForm');
     const err = document.getElementById('settingsErr');
     const ok  = document.getElementById('settingsOk');
 
-    // Load existing
     try {
       const doc = await window.db.collection('settings').doc('company').get();
       if (doc.exists) {
@@ -28,12 +29,12 @@
       e.preventDefault();
       err.hidden = true; ok.hidden = true;
       const data = {
-        name:     document.getElementById('sName').value.trim(),
-        address:  document.getElementById('sAddress').value.trim(),
-        phone:    document.getElementById('sPhone').value.trim(),
-        email:    document.getElementById('sEmail').value.trim(),
+        name: document.getElementById('sName').value.trim(),
+        address: document.getElementById('sAddress').value.trim(),
+        phone: document.getElementById('sPhone').value.trim(),
+        email: document.getElementById('sEmail').value.trim(),
         whatsapp: document.getElementById('sWhatsapp').value.trim(),
-        gst:      document.getElementById('sGst').value.trim(),
+        gst: document.getElementById('sGst').value.trim(),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
         updatedBy: profile.email
       };

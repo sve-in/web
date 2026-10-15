@@ -13,8 +13,6 @@
 <body>
 
 <div class="admin-layout">
-
-  <!-- SIDEBAR -->
   <aside class="admin-sidebar" id="adminSidebar">
     <div class="admin-sidebar-brand">
       <img src="../images/logo.png" alt="SVE" onerror="this.style.display='none'" />
@@ -26,6 +24,7 @@
       <a href="users.html"><span class="ic">👥</span> Users</a>
       <a href="products.html"><span class="ic">📦</span> Products</a>
       <a href="orders.html"><span class="ic">🛒</span> Orders</a>
+      <a href="complaints.html"><span class="ic">⚠️</span> Complaints</a>
       <a href="leads.html"><span class="ic">📞</span> Leads</a>
       <a href="analytics.html"><span class="ic">📈</span> Analytics</a>
       <a href="settings.html"><span class="ic">⚙️</span> Settings</a>
@@ -35,7 +34,6 @@
     </div>
   </aside>
 
-  <!-- MAIN -->
   <div class="admin-main">
     <header class="admin-topbar">
       <div class="admin-topbar-left">
@@ -43,10 +41,7 @@
         <span class="admin-page-title">Dashboard</span>
       </div>
       <div class="admin-topbar-right">
-        <div class="admin-user">
-          <span class="n">Admin</span>
-          <span class="e" id="adminEmail">…</span>
-        </div>
+        <div class="admin-user"><span class="n">Admin</span><span class="e" id="adminEmail">…</span></div>
         <button class="btn-outline btn-sm" data-logout>Logout</button>
       </div>
     </header>
@@ -56,23 +51,23 @@
       <div class="stat-grid">
         <div class="stat-card">
           <div class="lbl">Total Applications</div>
-          <div class="val" id="sTotal">—</div>
-          <div class="trend up" id="sTotalTrend"></div>
+          <div class="val" id="sApps">—</div>
+          <div class="trend" style="color:#64748b;"><span id="sAppsPending">—</span> pending</div>
         </div>
         <div class="stat-card">
-          <div class="lbl">Pending</div>
-          <div class="val" id="sPending" style="color:#fcd34d;">—</div>
-          <div class="trend" style="color:#64748b;">Awaiting review</div>
+          <div class="lbl">Total Users</div>
+          <div class="val" id="sUsers">—</div>
+          <div class="trend" style="color:#64748b;"><span id="sUsersActive">—</span> active</div>
         </div>
         <div class="stat-card">
-          <div class="lbl">Approved</div>
-          <div class="val" id="sApproved" style="color:#6ee7b7;">—</div>
-          <div class="trend" style="color:#64748b;">Active users</div>
+          <div class="lbl">Total Orders</div>
+          <div class="val" id="sOrders">—</div>
+          <div class="trend" style="color:#64748b;">₹<span id="sRevenue">0</span> revenue</div>
         </div>
         <div class="stat-card">
-          <div class="lbl">Rejected</div>
-          <div class="val" id="sRejected" style="color:#fca5a5;">—</div>
-          <div class="trend" style="color:#64748b;">Closed</div>
+          <div class="lbl">Open Complaints</div>
+          <div class="val" id="sComplaints" style="color:#fcd34d;">—</div>
+          <div class="trend" style="color:#64748b;">Need attention</div>
         </div>
       </div>
 
@@ -83,6 +78,18 @@
         </div>
         <div class="panel-body p-0">
           <div id="recentApps">
+            <div class="loading-block"><span class="spinner"></span> Loading…</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Recent Orders</h3>
+          <a href="orders.html" class="btn-outline btn-sm">View All →</a>
+        </div>
+        <div class="panel-body p-0">
+          <div id="recentOrders">
             <div class="loading-block"><span class="spinner"></span> Loading…</div>
           </div>
         </div>

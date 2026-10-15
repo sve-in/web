@@ -23,6 +23,7 @@
       <a href="users.html"><span class="ic">👥</span> Users</a>
       <a href="products.html"><span class="ic">📦</span> Products</a>
       <a href="orders.html"><span class="ic">🛒</span> Orders</a>
+      <a href="complaints.html"><span class="ic">⚠️</span> Complaints</a>
       <a href="leads.html"><span class="ic">📞</span> Leads</a>
       <a href="analytics.html"><span class="ic">📈</span> Analytics</a>
       <a href="settings.html"><span class="ic">⚙️</span> Settings</a>
@@ -35,20 +36,30 @@
         <button class="admin-hamburger" id="adminHamburger">☰</button>
         <span class="admin-page-title">Analytics</span>
       </div>
-      <div class="admin-topbar-right"><button class="btn-outline btn-sm" data-logout>Logout</button></div>
+      <div class="admin-topbar-right">
+        <div class="admin-user"><span class="n">Admin</span><span class="e" id="adminEmail">…</span></div>
+        <button class="btn-outline btn-sm" data-logout>Logout</button>
+      </div>
     </header>
+
     <main class="admin-content">
       <div class="panel">
         <div class="panel-head"><h3>Applications — Last 30 Days</h3></div>
         <div class="panel-body"><canvas id="chartApps" height="90"></canvas></div>
       </div>
       <div class="panel">
-        <div class="panel-head"><h3>Status Distribution</h3></div>
+        <div class="panel-head"><h3>Orders — Last 30 Days</h3></div>
+        <div class="panel-body"><canvas id="chartOrders" height="90"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Application Status Distribution</h3></div>
         <div class="panel-body" style="max-width:400px;margin:0 auto;"><canvas id="chartStatus" height="200"></canvas></div>
       </div>
     </main>
   </div>
 </div>
+
+<div id="toastBox" class="toast-box"></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>

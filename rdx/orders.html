@@ -13,7 +13,9 @@
   .tabs { display: flex; gap: 6px; background: #0f172a; padding: 4px; border-radius: 8px; margin-bottom: 16px; flex-wrap: wrap; }
   .tabs button { padding: 8px 16px; border-radius: 6px; font-size: .82rem; font-weight: 600; color: #94a3b8; }
   .tabs button.active { background: #1e293b; color: #fff; }
-  select.status-sel { padding: 4px 8px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #e2e8f0; font-size: .8rem; }
+  .toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .toolbar input { flex: 1; min-width: 200px; padding: 10px 14px; background: #0f172a; border: 1.5px solid #334155; border-radius: 8px; color: #e2e8f0; font-size: .88rem; }
+  .toolbar input:focus { outline: none; border-color: #3b82f6; }
 </style>
 </head>
 <body>
@@ -30,6 +32,7 @@
       <a href="users.html"><span class="ic">👥</span> Users</a>
       <a href="products.html"><span class="ic">📦</span> Products</a>
       <a href="orders.html"><span class="ic">🛒</span> Orders</a>
+      <a href="complaints.html"><span class="ic">⚠️</span> Complaints</a>
       <a href="leads.html"><span class="ic">📞</span> Leads</a>
       <a href="analytics.html"><span class="ic">📈</span> Analytics</a>
       <a href="settings.html"><span class="ic">⚙️</span> Settings</a>
@@ -43,6 +46,7 @@
         <span class="admin-page-title">Orders</span>
       </div>
       <div class="admin-topbar-right">
+        <div class="admin-user"><span class="n">Admin</span><span class="e" id="adminEmail">…</span></div>
         <button class="btn-outline btn-sm" data-logout>Logout</button>
       </div>
     </header>
@@ -55,6 +59,10 @@
         <button data-status="dispatched">Dispatched</button>
         <button data-status="delivered">Delivered</button>
         <button data-status="cancelled">Cancelled</button>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" id="searchBox" placeholder="Search by Order ID, customer, email…" />
       </div>
 
       <div class="panel">

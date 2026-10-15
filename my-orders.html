@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Orders — SVE Business Portal</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-text"><span class="brand-name">SVE <span class="brand-badge">B2B</span></span><span class="brand-sub">Business Portal</span></div>
+    </a>
+    <div class="nav-actions">
+      <span id="userEmail" style="font-size:.85rem;color:var(--slate-500);margin-right:8px;"></span>
+      <button class="btn-outline" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="padding:40px 0;">
+  <div class="container">
+    <h1 style="font-size:1.6rem;font-weight:800;margin-bottom:24px;">My Orders</h1>
+    <div id="ordersList"><div class="loading-block"><span class="spinner"></span> Loading…</div></div>
+  </div>
+</section>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  window.requireAuth(async function (profile) {
+    document.getElementById('userEmail').textContent = profile.email;
+    try {
+      const snap = await window.db.collection('orders').where('uid','==',profile.uid).orderBy('createdAt','desc').limit(100).get();
+      const list = [];
+      snap.forEach(function(d){ list.push(d.data()); });
+      const wrap = document.getElementById('ordersList');
+      if (!list.length) {
+        wrap.innerHTML = '<div class="empty-pub"><div class="icon">📦</div><h3>No orders yet</h3><p>Start by placing your first order.</p><a href="products.html" class="btn-primary" style="margin-top:16px;">Browse Products</a></div>';
+        return;
+      }
+      let html = '';
+      list.forEach(function(o){
+        html += '<div class="panel" style="background:white;border:1px solid var(--slate-100);border-radius:var(--radius);padding:18px;margin-bottom:12px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;">'
+          + '<div>'
+            + '<div style="font-family:monospace;font-weight:700;color:var(--blue-600);font-size:.85rem;">' + window.escapeHtml(o.orderId) + '</div>'
+            + '<div style="font-weight:700;margin-top:4px;">' + window.escapeHtml(o.product || '—') + '</div>'
+            + '<div style="font-size:.82rem;color:var(--slate-500);margin-top:4px;">' + window.fmtDateTime(o.createdAt) + ' · Qty: ' + (o.quantity || '—') + '</div>'
+          + '</div>'
+          + '<div style="text-align:right;">'
+            + '<div style="font-size:1.1rem;font-weight:800;">' + window.fmtMoney(o.total) + '</div>'
+            + '<span class="pill-status pill-' + (o.status || 'pending') + '" style="margin-top:6px;display:inline-block;">' + (o.status || 'pending') + '</span>'
+          + '</div>'
+          + '<a href="order-detail.html?id=' + encodeURIComponent(o.orderId) + '" class="btn-outline btn-sm">View →</a>'
+        + '</div>';
+      });
+      wrap.innerHTML = html;
+    } catch (e) {
+      console.error(e);
+      document.getElementById('ordersList').innerHTML = '<div class="empty-pub"><div class="icon">⚠️</div><h3>Could not load orders</h3></div>';
+    }
+  });
+  document.getElementById('logoutBtn').addEventListener('click', function(){
+    if (confirm('Logout?')) window.sveLogout();
+  });
+</script>
+</body>
+</html>

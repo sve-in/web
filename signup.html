@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Create Account — SVE Business Portal</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/main.css" />
+<style>
+  .auth-wrap { min-height: calc(100vh - 72px); display: flex; align-items: center; justify-content: center; padding: 40px 20px; background: linear-gradient(180deg,#f8fafc,#eff6ff); }
+  .auth-card { background: white; border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow-lg); border: 1px solid var(--slate-100); max-width: 480px; width: 100%; }
+  .auth-head { text-align: center; margin-bottom: 28px; }
+  .auth-head h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: 6px; }
+  .auth-head p { color: var(--slate-500); font-size: .9rem; }
+  .recaptcha-box { margin: 16px 0; }
+  .step-panel { display: none; }
+  .step-panel.active { display: block; }
+</style>
+</head>
+<body>
+
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-text">
+        <span class="brand-name">SVE <span class="brand-badge">B2B</span></span>
+        <span class="brand-sub">Business Portal</span>
+      </div>
+    </a>
+    <div class="nav-actions">
+      <a href="login.html" class="btn-primary">Login</a>
+    </div>
+  </div>
+</header>
+
+<section class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-head">
+      <h1>Create your account</h1>
+      <p>Sign up to start ordering. / खाता बनाएं।</p>
+    </div>
+
+    <div class="steps-bar">
+      <div class="step-item"><div class="num active" data-stepnum="1">1</div><div class="lbl">Details</div></div>
+      <div class="line" data-stepline="1"></div>
+      <div class="step-item"><div class="num" data-stepnum="2">2</div><div class="lbl">Verify</div></div>
+      <div class="line" data-stepline="2"></div>
+      <div class="step-item"><div class="num" data-stepnum="3">3</div><div class="lbl">Password</div></div>
+    </div>
+
+    <!-- STEP 1: details -->
+    <div class="step-panel active" data-step="1">
+      <div class="field" style="margin-bottom:14px;">
+        <label>Full Name *</label>
+        <input type="text" id="suName" placeholder="e.g. Rajesh Kumar" />
+      </div>
+      <div class="field" style="margin-bottom:14px;">
+        <label>Email *</label>
+        <input type="email" id="suEmail" placeholder="you@business.com" />
+      </div>
+      <div class="field" style="margin-bottom:14px;">
+        <label>Phone (10 digits) *</label>
+        <input type="tel" id="suPhone" maxlength="10" inputmode="numeric" placeholder="9876543210" />
+      </div>
+      <div class="recaptcha-box" id="recaptchaContainer"></div>
+      <div id="suErr1" class="alert alert-error" hidden></div>
+      <button class="btn-primary btn-block btn-lg" id="suSendOtpBtn">Send OTP →</button>
+    </div>
+
+    <!-- STEP 2: OTP -->
+    <div class="step-panel" data-step="2">
+      <p style="text-align:center;color:var(--slate-500);font-size:.9rem;margin-bottom:10px;">
+        Enter the 6-digit code sent to <strong id="suPhoneEcho">—</strong>
+      </p>
+      <div class="otp-row">
+        <input type="tel" maxlength="1" class="otp-digit" />
+        <input type="tel" maxlength="1" class="otp-digit" />
+        <input type="tel" maxlength="1" class="otp-digit" />
+        <input type="tel" maxlength="1" class="otp-digit" />
+        <input type="tel" maxlength="1" class="otp-digit" />
+        <input type="tel" maxlength="1" class="otp-digit" />
+      </div>
+      <div id="suErr2" class="alert alert-error" hidden></div>
+      <div id="suInfo2" class="alert alert-info" hidden></div>
+      <button class="btn-primary btn-block btn-lg" id="suVerifyOtpBtn">Verify OTP →</button>
+      <div style="text-align:center;margin-top:14px;">
+        <button class="btn-ghost" id="suResendBtn" disabled>Resend in <span id="suResendTimer">30</span>s</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: password -->
+    <div class="step-panel" data-step="3">
+      <div class="field" style="margin-bottom:14px;">
+        <label>Create Password *</label>
+        <div style="position:relative;">
+          <input type="password" id="suPassword" placeholder="Min 8 chars, 1 upper, 1 number" style="padding-right:44px;" />
+          <button type="button" class="pass-toggle" id="suTogglePass" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--slate-500);">👁</button>
+        </div>
+        <span class="hint" id="suPwStrength" style="font-size:.78rem;color:var(--slate-500);"></span>
+      </div>
+      <div class="field" style="margin-bottom:14px;">
+        <label>Confirm Password *</label>
+        <input type="password" id="suPassword2" placeholder="Re-enter password" />
+      </div>
+      <div id="suErr3" class="alert alert-error" hidden></div>
+      <button class="btn-primary btn-block btn-lg" id="suCreateBtn">Create Account →</button>
+    </div>
+
+    <div style="text-align:center;margin-top:22px;padding-top:22px;border-top:1px solid var(--slate-100);font-size:.88rem;color:var(--slate-500);">
+      Already have an account? <a href="login.html" style="color:var(--blue-600);font-weight:600;">Login →</a>
+    </div>
+  </div>
+</section>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/sheets.js"></script>
+<script src="js/signup.js"></script>
+</body>
+</html>
