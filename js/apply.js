@@ -1,7 +1,6 @@
 /* ============================================================
    SVE Business Portal — Apply Form
-   Single-step: details + password → create Auth user → email verify
-   No OTP.
+   Fix: users doc create is best-effort, applications save is critical
    ============================================================ */
 
 (function () {
@@ -85,7 +84,6 @@
       formError.hidden = false;
       return;
     }
-
     if (pw1.length < 8) { formError.textContent = 'Password must be at least 8 characters.'; formError.hidden = false; return; }
     if (!/[A-Z]/.test(pw1)) { formError.textContent = 'Include at least one uppercase letter.'; formError.hidden = false; return; }
     if (!/\d/.test(pw1)) { formError.textContent = 'Include at least one number.'; formError.hidden = false; return; }
@@ -95,24 +93,28 @@
     spinner.hidden = false;
     btnText.textContent = 'Submitting…';
 
-    try {
-      // 1. Create Firebase Auth user
-      const cred = await window.auth.createUserWithEmailAndPassword(data.email, pw1);
-      const user = cred.user;
-      await user.updateProfile({ displayName: data.name });
+    let appId = null;
+    let user = null;
 
-      // 2. Send verification email
+    try {
+      // 1. Create Auth user
+      console.log('[Apply] Step 1: Creating auth user...');
+      const cred = await window.auth.createUserWithEmailAndPassword(data.email, pw1);
+      user = cred.user;
+      console.log('[Apply] Auth user created:', user.uid);
+
+      try { await user.updateProfile({ displayName: data.name }); } catch (e) { console.warn('profile:', e.message); }
+
+      // 2. Send verification email (best-effort)
       try {
-        await user.sendEmailVerification({
-          url: window.location.origin + '/login.html',
-          handleCodeInApp: false
-        });
+        await user.sendEmailVerification({ url: window.location.origin + '/login.html', handleCodeInApp: false });
         console.log('[Apply] Verification email sent to', data.email);
       } catch (emailErr) {
-        console.warn('[Apply] Verification email failed:', emailErr);
+        console.warn('[Apply] Verification email failed:', emailErr.message);
       }
 
-      // 3. Generate Application ID
+      // 3. Generate App ID
+      console.log('[Apply] Step 3: Generating app ID...');
       const year = new Date().getFullYear();
       const counterRef = window.db.collection('counters').doc('applications_' + year);
       const num = await window.db.runTransaction(async function (tx) {
@@ -121,9 +123,11 @@
         tx.set(counterRef, { count: n, year: year, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
         return n;
       });
-      const appId = 'SVE-APP-' + year + '-' + String(num).padStart(4, '0');
+      appId = 'SVE-APP-' + year + '-' + String(num).padStart(4, '0');
+      console.log('[Apply] App ID:', appId);
 
-      // 4. Save application
+      // 4. CRITICAL — Save applications doc FIRST
+      console.log('[Apply] Step 4: Save applications doc (CRITICAL)...');
       await window.db.collection('applications').doc(appId).set({
         applicationId: appId,
         uid: user.uid,
@@ -144,35 +148,47 @@
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
+      console.log('[Apply] applications doc saved ✔');
 
-      // 5. Also create users doc with status = pending_approval
-      await window.db.collection('users').doc(user.uid).set({
-        uid: user.uid,
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        businessName: data.businessName,
-        city: data.city,
-        state: data.state,
-        businessType: data.businessType,
-        gst: data.gst || '',
-        role: 'member',
-        status: 'pending_approval',
-        emailVerified: false,
-        signupSource: 'portal-apply',
-        applicationId: appId,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      }, { merge: true });
+      // 5. BEST-EFFORT — users doc (don't fail if rules block)
+      console.log('[Apply] Step 5: Try users doc (best-effort)...');
+      try {
+        await window.db.collection('users').doc(user.uid).set({
+          uid: user.uid,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          businessName: data.businessName,
+          city: data.city,
+          state: data.state,
+          businessType: data.businessType,
+          gst: data.gst || '',
+          role: 'member',
+          status: 'pending_approval',
+          emailVerified: false,
+          signupSource: 'portal-apply',
+          applicationId: appId,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+        console.log('[Apply] users doc saved ✔');
+      } catch (userErr) {
+        console.warn('[Apply] users doc failed (non-critical):', userErr.message);
+      }
 
-      // 6. Add to leads
-      await window.db.collection('leads').add({
-        name: data.name, phone: data.phone, email: data.email,
-        message: 'Distributor Application: ' + data.businessName + ' (' + data.city + ')',
-        source: 'portal-apply', appId: appId,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
+      // 6. BEST-EFFORT — leads
+      try {
+        await window.db.collection('leads').add({
+          name: data.name, phone: data.phone, email: data.email,
+          message: 'Distributor Application: ' + data.businessName + ' (' + data.city + ')',
+          source: 'portal-apply', appId: appId,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        console.log('[Apply] leads saved ✔');
+      } catch (leadErr) {
+        console.warn('[Apply] leads failed (non-critical):', leadErr.message);
+      }
 
-      // 7. Google Sheet
+      // 7. Google Sheet (fire-and-forget)
       if (window.sheetsSend) {
         window.sheetsSend('application', {
           applicationId: appId, name: data.name, phone: data.phone,
@@ -190,7 +206,7 @@
       }
 
       // 8. Sign out
-      await window.auth.signOut();
+      try { await window.auth.signOut(); } catch (e) { console.warn('signout:', e.message); }
 
       // 9. Show success
       appIdVal.textContent = appId;
@@ -202,9 +218,17 @@
     } catch (err) {
       console.error('[Apply] Error:', err);
       let msg = 'Something went wrong. Please try again.';
-      if (err.code === 'auth/email-already-in-use') msg = 'This email is already registered. Please login or use a different email.';
-      else if (err.code === 'auth/weak-password') msg = 'Password too weak.';
-      else if (err.code === 'auth/network-request-failed') msg = 'Network error. Check your internet.';
+      if (err.code === 'auth/email-already-in-use') {
+        msg = 'This email is already registered. Please login or use a different email.';
+      } else if (err.code === 'auth/weak-password') {
+        msg = 'Password too weak.';
+      } else if (err.code === 'auth/network-request-failed') {
+        msg = 'Network error. Check your internet.';
+      } else if (err.code === 'permission-denied' || (err.message && err.message.indexOf('permission') !== -1)) {
+        msg = 'Permission error. Please check Firestore rules (details in console).';
+      } else if (err.message) {
+        msg = err.message;
+      }
       formError.textContent = msg;
       formError.hidden = false;
       formError.scrollIntoView({ behavior: 'smooth', block: 'center' });
