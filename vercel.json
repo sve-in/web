@@ -1,0 +1,11 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/:path((?!rdx).*)\\.html",
+      "destination": "/:path",
+      "permanent": true
+    }
+  ]
+}
