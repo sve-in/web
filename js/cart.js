@@ -2,14 +2,11 @@
    SVE Business Portal — Cart & URL Parsing Logic
    - Guest cart: NO login required to add items
    - Secure: fixed CSV prices, tampered URL prices ignored
-   - Cart UI with ₹25,000 MOQ progress bar
-   - Login forced ONLY at checkout click
+   - MOQ Limit Removed: Anyone can checkout!
    ============================================================ */
 
 (function () {
   'use strict';
-
-  const MOQ_AMOUNT = 25000; // Minimum Order Value ₹25,000
 
   // Master Price & Info List (As per CSV) — single source of truth
   const CATALOG = {
@@ -116,7 +113,7 @@
   }
 
   // ============================================================
-  // Cart Page UI
+  // Cart Page UI (NO MOQ LIMIT)
   // ============================================================
   function renderCartPage() {
     var content = document.getElementById('cartContent');
@@ -157,24 +154,9 @@
         '</tr>';
     });
 
-    var remaining = Math.max(MOQ_AMOUNT - total, 0);
-    var progressPercent = Math.min((total / MOQ_AMOUNT) * 100, 100);
-    var moqMet = total >= MOQ_AMOUNT;
-
-    var moqHtml = moqMet
-      ? '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;margin-bottom:20px;text-align:center;color:#166534;font-weight:600;">✅ Minimum Order Value Met! You can proceed to checkout.</div>'
-      : '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:16px;margin-bottom:20px;">' +
-          '<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.85rem;color:#92400e;font-weight:600;">' +
-            '<span>Minimum Order: ₹25,000</span><span>Add ' + window.fmtMoney(remaining) + ' more</span>' +
-          '</div>' +
-          '<div style="width:100%;background:#fef3c7;border-radius:999px;height:8px;overflow:hidden;">' +
-            '<div style="width:' + progressPercent + '%;background:#f59e0b;height:100%;"></div>' +
-          '</div>' +
-        '</div>';
-
     content.innerHTML =
       '<div class="cart-layout">' +
-        '<div>' + moqHtml +
+        '<div>' +
           '<div class="panel" style="background:white;border-radius:var(--radius);border:1px solid var(--slate-100);overflow:hidden;">' +
             '<table class="cart-table"><thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th><th></th></tr></thead>' +
             '<tbody>' + rows + '</tbody></table>' +
@@ -186,9 +168,10 @@
           '<div class="cart-summary-row"><span>Subtotal</span><span>' + window.fmtMoney(total) + '</span></div>' +
           '<div class="cart-summary-row"><span>Shipping</span><span style="color:var(--slate-500);">Calculated at checkout</span></div>' +
           '<div class="cart-summary-row total"><span>Total</span><span>' + window.fmtMoney(total) + '</span></div>' +
-          (moqMet
-            ? '<a href="checkout.html" id="checkoutBtn" class="btn-primary btn-block btn-lg" style="margin-top:18px;">Proceed to Checkout →</a>'
-            : '<button class="btn-outline btn-block btn-lg" style="margin-top:18px;opacity:0.6;" disabled>Minimum Order Required</button>') +
+          
+          // Checkout button (No limit check)
+          '<a href="checkout.html" id="checkoutBtn" class="btn-primary btn-block btn-lg" style="margin-top:18px;">Proceed to Checkout →</a>' +
+          
           '<button class="btn-ghost btn-block" id="clearCartBtn" style="margin-top:8px;color:var(--red);">Clear Cart</button>' +
         '</div>' +
       '</div>';
