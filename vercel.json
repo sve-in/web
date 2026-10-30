@@ -1,11 +1,10 @@
 {
-  "cleanUrls": true,
+  "cleanUrls": false,
   "trailingSlash": false,
-  "redirects": [
+  "rewrites": [
     {
-      "source": "/:path((?!rdx).*)\\.html",
-      "destination": "/:path",
-      "permanent": true
+      "source": "/rdx",
+      "destination": "/rdx/index.html"
     }
   ]
 }
