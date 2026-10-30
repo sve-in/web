@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Life Star — Economical Detergent | SVE B2B</title>
+<link rel="icon" href="images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/main.css" />
+<style>
+  .brand-hero { padding: 60px 0 80px; background: linear-gradient(180deg, #f0f9ff 0%, #f8fafc 100%); }
+  .brand-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: start; }
+  .brand-image { border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); background: white; position: sticky; top: 100px; }
+  .brand-image img { width: 100%; height: auto; display: block; object-fit: cover; }
+  .brand-title { font-size: 2.5rem; font-weight: 900; color: var(--slate-900); margin-bottom: 10px; }
+  .brand-desc { font-size: 1.05rem; color: var(--slate-500); line-height: 1.6; margin-bottom: 24px; }
+  .product-list { display: flex; flex-direction: column; gap: 12px; }
+  .product-row { background: white; border: 1.5px solid var(--slate-100); border-radius: var(--radius); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; transition: var(--transition); }
+  .product-row:hover { border-color: var(--blue-400); transform: translateY(-2px); box-shadow: var(--shadow); }
+  .product-info { flex: 1; }
+  .product-size { font-size: 1.1rem; font-weight: 800; color: var(--slate-900); margin-bottom: 4px; }
+  .product-type { font-size: 0.8rem; color: var(--green); font-weight: 600; }
+  .product-price { font-size: 1.2rem; font-weight: 800; color: var(--blue-600); width: 100px; text-align: right; margin-right: 20px; }
+  .product-price small { font-size: 0.75rem; color: var(--slate-500); font-weight: 500; }
+  @media(max-width: 768px) { 
+    .brand-grid { grid-template-columns: 1fr; } .brand-title { font-size: 2rem; } 
+    .brand-image { position: relative; top: 0; } .product-row { flex-wrap: wrap; gap: 10px; }
+    .product-price { width: auto; text-align: left; margin-right: 0; } .product-row button { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-text"><span class="brand-name">SVE <span class="brand-badge">B2B</span></span><span class="brand-sub">Business Portal</span></div>
+    </a>
+    <nav class="nav-links">
+      <a href="products.html">All Products</a>
+      <a href="nikolux.html">Nikolux</a>
+      <a href="lifestar.html" class="active" style="color:var(--blue-600); font-weight: 700;">Life Star</a>
+      <a href="sanjivni.html">Sanjivni</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="cart.html" class="btn-ghost cart-badge cart-nav-link" data-cart-count="0">🛒 Cart</a>
+      <a href="login.html" class="btn-primary">Login</a>
+    </div>
+  </div>
+</header>
+
+<section class="brand-hero">
+  <div class="container brand-grid">
+    <div class="brand-image">
+      <img src="https://www.sveindia.mywire.org/images/life-star.jpg" alt="Life Star Detergent" onerror="this.src='https://via.placeholder.com/600x600?text=Life+Star'" />
+    </div>
+    <div>
+      <span class="badge" style="background:#dcfce7;color:#166534; margin-bottom: 12px; display: inline-block;">Value Brand</span>
+      <h1 class="brand-title">Life Star</h1>
+      <p class="brand-desc">Life Star Detergent Powder by Siddhi Vinayak Enterprises is an economical everyday cleaning solution designed to fit every household budget.</p>
+      
+      <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 16px; color: var(--slate-700);">Select Pack Size:</h3>
+      <div class="product-list">
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">1 kg Pack</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹70 <small>/ pack</small></div>
+          <button class="btn-primary" onclick="addToCart('lifestar_1kg', 'Life Star', '1kg', 70)">Add to Cart</button>
+        </div>
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">2 kg Pack</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹140 <small>/ pack</small></div>
+          <button class="btn-primary" onclick="addToCart('lifestar_2kg', 'Life Star', '2kg', 140)">Add to Cart</button>
+        </div>
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">2.5 kg Pack</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹175 <small>/ pack</small></div>
+          <button class="btn-primary" onclick="addToCart('lifestar_2.5kg', 'Life Star', '2.5kg', 175)">Add to Cart</button>
+        </div>
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">4 kg Bag (Thela)</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹280 <small>/ bag</small></div>
+          <button class="btn-primary" onclick="addToCart('lifestar_4kg', 'Life Star', '4kg', 280)">Add to Cart</button>
+        </div>
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">5 kg Bag (Thela)</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹350 <small>/ bag</small></div>
+          <button class="btn-primary" onclick="addToCart('lifestar_5kg', 'Life Star', '5kg', 350)">Add to Cart</button>
+        </div>
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">10 kg Bag (Thela)</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹700 <small>/ bag</small></div>
+          <button class="btn-primary" onclick="addToCart('lifestar_10kg', 'Life Star', '10kg', 700)">Add to Cart</button>
+        </div>
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">20 kg Sack (Katta)</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹1400 <small>/ sack</small></div>
+          <button class="btn-primary" onclick="addToCart('lifestar_20kg', 'Life Star', '20kg', 1400)">Add to Cart</button>
+        </div>
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">25 kg Sack (Katta)</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹1750 <small>/ sack</small></div>
+          <button class="btn-primary" onclick="addToCart('lifestar_25kg', 'Life Star', '25kg', 1750)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/cart.js"></script>
+
+<script>
+  function addToCart(id, brand, size, price) {
+    window.auth.onAuthStateChanged(function(user) {
+      if (user) {
+        window.cartAdd({ id: id, name: brand, size: size, price: price, quantity: 1, image: 'https://www.sveindia.mywire.org/images/life-star.jpg', unit: 'pack' });
+        window.uiToast(brand + ' ' + size + ' added to cart.', 'success');
+      } else {
+        try { localStorage.setItem('sve_pending_cart', JSON.stringify({ id: id, name: brand, size: size, price: price, quantity: 1, image: 'https://www.sveindia.mywire.org/images/life-star.jpg', unit: 'pack' })); } catch(e) {}
+        window.uiToast('Please login to add products to cart.', 'warning');
+        setTimeout(() => { window.location.href = 'login.html?next=cart.html'; }, 1200);
+      }
+    });
+  }
+</script>
+</body>
+</html>
