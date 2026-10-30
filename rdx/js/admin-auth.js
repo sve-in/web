@@ -10,15 +10,16 @@
     'shidhivinayakindustry.svi@gmail.com'
   ];
 
-  const LOGIN_PAGE = 'index.html';
-  const DASHBOARD_PAGE = 'dashboard.html';
+  // Vercel routing issue se bachne ke liye absolute path use kar rahe hain
+  const LOGIN_PAGE = '/rdx/'; 
+  const DASHBOARD_PAGE = '/rdx/dashboard.html';
 
   function isAdminEmail(email) {
     return email && ADMIN_EMAILS.indexOf(String(email).toLowerCase().trim()) !== -1;
   }
   window.isAdminEmail = isAdminEmail;
 
-  /* ---------- GOOGLE LOGIN ---------- */
+  /* ---------- GOOGLE LOGIN (On Login Page) ---------- */
   const googleBtn = document.getElementById('googleLoginBtn');
   if (googleBtn) {
     const errBox  = document.getElementById('adminError');
@@ -56,9 +57,12 @@
           return;
         }
 
+        // Save session flag so frontend login page doesn't redirect us
         try { sessionStorage.setItem('sve_admin', email); } catch (e2) {}
 
         if (window.adminToast) window.adminToast('Welcome, admin!', 'success');
+        
+        // Redirect directly to dashboard
         setTimeout(function () { window.location.href = DASHBOARD_PAGE; }, 400);
 
       } catch (err) {
@@ -75,7 +79,7 @@
       }
     });
 
-    // Login page check: If already logged in, redirect to dashboard
+    // If already logged in as admin → skip login page
     window.auth.onAuthStateChanged(function (user) {
       if (user && isAdminEmail(user.email)) {
         window.location.href = DASHBOARD_PAGE;
@@ -83,29 +87,27 @@
     });
   }
 
-  /* ---------- GUARD FOR ADMIN PAGES (FIXED) ---------- */
+  /* ---------- GUARD FOR ADMIN PAGES (Dashboard, Users, etc.) ---------- */
   window.requireAdmin = function (callback) {
     return new Promise(function (resolve) {
-      // isAuthResolved flag ensures we don't redirect while Firebase is still checking
       let isAuthResolved = false;
 
       const unsub = window.auth.onAuthStateChanged(async function (user) {
-        // Agar pehle se check ho chuka hai, toh wapas mat karo
         if (isAuthResolved) return; 
         isAuthResolved = true;
-        unsub(); // Stop listening further
+        unsub(); // Stop listening immediately
 
         if (!user || !isAdminEmail(user.email)) {
           if (user) { try { await window.auth.signOut(); } catch (e) {} }
           
-          // Check if we are already on the login page to prevent infinite loop
-          if (!window.location.pathname.includes('index.html')) {
+          // Agar admin pages par hain aur logged in nahi hain, toh /rdx/ (login page) par bhejo
+          if (!window.location.pathname.includes('/rdx/index.html') && window.location.pathname !== '/rdx/' && window.location.pathname !== '/rdx') {
             window.location.href = LOGIN_PAGE;
           }
           return;
         }
         
-        // Success: User is authorized
+        // Success: User is authorized Admin
         const profile = {
           uid: user.uid,
           email: user.email,
@@ -155,15 +157,17 @@
       });
     }
 
+    // Highlight current nav
     const path = window.location.pathname.split('/').pop() || 'dashboard.html';
     document.querySelectorAll('.admin-nav a').forEach(function (a) {
       const href = a.getAttribute('href');
       if (href === path) a.classList.add('active');
     });
 
+    // Logout buttons
     document.querySelectorAll('[data-logout]').forEach(function (b) {
       b.addEventListener('click', function () {
-        if (confirm('Logout from admin panel?')) window.adminLogout();
+        if (confirm('Logout from admin panel? / लॉगआउट?')) window.adminLogout();
       });
     });
   });
