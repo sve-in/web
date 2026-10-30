@@ -1,8 +1,4 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false,
-  "rewrites": [
-    { "source": "/rdx", "destination": "/rdx/dashboard.html" },
-    { "source": "/rdx/:path*", "destination": "/rdx/:path*.html" }
-  ]
+  "trailingSlash": false
 }
