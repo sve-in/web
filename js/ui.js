@@ -1,6 +1,6 @@
 /* ============================================================
    SVE Business Portal — Shared UI helpers
-   Toast, modal, formatting, loader
+   Toast, modal, formatting, loader, cart (localStorage)
    ============================================================ */
 
 (function () {
@@ -80,49 +80,97 @@
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   };
 
-  /* ---------- CART HELPERS (localStorage) ---------- */
+  /* ---------- CART HELPERS (localStorage) ----------
+     NOTE: We use 'quantity' field (not 'qty') everywhere.
+     Backwards-compat: if old 'qty' exists, we migrate it to 'quantity'.
+  ------------------------------------------------ */
   const CART_KEY = 'sve_cart_v1';
+
+  function normalizeItem(i) {
+    // Migrate legacy 'qty' -> 'quantity'
+    return {
+      id: i.id,
+      name: i.name,
+      size: i.size || '',
+      price: Number(i.price) || 0,
+      image: i.image || '',
+      unit: i.unit || 'pack',
+      quantity: Number(i.quantity != null ? i.quantity : (i.qty != null ? i.qty : 1)) || 1
+    };
+  }
+
   window.cartGet = function () {
-    try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch (e) { return []; }
+    try {
+      const raw = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+      if (!Array.isArray(raw)) return [];
+      return raw.map(normalizeItem);
+    } catch (e) { return []; }
   };
+
   window.cartSave = function (items) {
     try { localStorage.setItem(CART_KEY, JSON.stringify(items)); } catch (e) {}
     window.cartUpdateBadge();
   };
+
   window.cartAdd = function (product, qty) {
     qty = Number(qty) || 1;
     const cart = window.cartGet();
     const idx = cart.findIndex(function (i) { return i.id === product.id; });
-    if (idx >= 0) cart[idx].qty += qty;
-    else cart.push({ id: product.id, name: product.name, price: Number(product.price) || 0, image: product.image || '', unit: product.unit || '', qty: qty });
+    if (idx >= 0) {
+      cart[idx].quantity += qty;
+      // refresh other fields in case catalog changed
+      cart[idx].name  = product.name  || cart[idx].name;
+      cart[idx].size  = product.size  || cart[idx].size;
+      cart[idx].price = Number(product.price) || cart[idx].price;
+      cart[idx].image = product.image || cart[idx].image;
+      cart[idx].unit  = product.unit  || cart[idx].unit;
+    } else {
+      cart.push(normalizeItem({
+        id: product.id,
+        name: product.name,
+        size: product.size,
+        price: product.price,
+        image: product.image,
+        unit: product.unit,
+        quantity: qty
+      }));
+    }
     window.cartSave(cart);
   };
+
   window.cartRemove = function (id) {
     const cart = window.cartGet().filter(function (i) { return i.id !== id; });
     window.cartSave(cart);
   };
+
   window.cartSetQty = function (id, qty) {
-    qty = Number(qty) || 1;
-    if (qty < 1) qty = 1;
+    qty = Math.max(1, Number(qty) || 1);
     const cart = window.cartGet();
     const idx = cart.findIndex(function (i) { return i.id === id; });
-    if (idx >= 0) { cart[idx].qty = qty; window.cartSave(cart); }
+    if (idx >= 0) { cart[idx].quantity = qty; window.cartSave(cart); }
   };
+
   window.cartClear = function () {
     try { localStorage.removeItem(CART_KEY); } catch (e) {}
     window.cartUpdateBadge();
   };
+
   window.cartCount = function () {
-    return window.cartGet().reduce(function (s, i) { return s + (i.qty || 0); }, 0);
+    return window.cartGet().reduce(function (s, i) { return s + (i.quantity || 0); }, 0);
   };
+
   window.cartTotal = function () {
-    return window.cartGet().reduce(function (s, i) { return s + (i.qty * i.price); }, 0);
+    return window.cartGet().reduce(function (s, i) { return s + (i.quantity * i.price); }, 0);
   };
+
   window.cartUpdateBadge = function () {
+    const c = window.cartCount();
     document.querySelectorAll('[data-cart-count]').forEach(function (el) {
-      const c = window.cartCount();
       el.setAttribute('data-count', c);
-      el.textContent = c > 0 ? c : '';
+      // only set textContent if element is the cart link (has cart-badge class)
+      if (el.classList.contains('cart-badge') || el.classList.contains('cart-nav-link')) {
+        el.textContent = '🛒 Cart' + (c > 0 ? ' (' + c + ')' : '');
+      }
     });
   };
 

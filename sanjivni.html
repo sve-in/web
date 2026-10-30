@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sanjivni — Herbal Detergent | SVE B2B</title>
+<link rel="icon" href="images/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/main.css" />
+<style>
+  .brand-hero { padding: 60px 0 80px; background: linear-gradient(180deg, #f0f9ff 0%, #f8fafc 100%); }
+  .brand-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: start; }
+  .brand-image { border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); background: white; position: sticky; top: 100px; }
+  .brand-image img { width: 100%; height: auto; display: block; object-fit: cover; }
+  .brand-title { font-size: 2.5rem; font-weight: 900; color: var(--slate-900); margin-bottom: 10px; }
+  .brand-desc { font-size: 1.05rem; color: var(--slate-500); line-height: 1.6; margin-bottom: 24px; }
+  .product-list { display: flex; flex-direction: column; gap: 12px; }
+  .product-row { background: white; border: 1.5px solid var(--slate-100); border-radius: var(--radius); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; transition: var(--transition); }
+  .product-row:hover { border-color: var(--blue-400); transform: translateY(-2px); box-shadow: var(--shadow); }
+  .product-info { flex: 1; }
+  .product-size { font-size: 1.1rem; font-weight: 800; color: var(--slate-900); margin-bottom: 4px; }
+  .product-type { font-size: 0.8rem; color: var(--green); font-weight: 600; }
+  .product-price { font-size: 1.2rem; font-weight: 800; color: var(--blue-600); width: 100px; text-align: right; margin-right: 20px; }
+  .product-price small { font-size: 0.75rem; color: var(--slate-500); font-weight: 500; }
+  @media(max-width: 768px) {
+    .brand-grid { grid-template-columns: 1fr; } .brand-title { font-size: 2rem; }
+    .brand-image { position: relative; top: 0; } .product-row { flex-wrap: wrap; gap: 10px; }
+    .product-price { width: auto; text-align: left; margin-right: 0; } .product-row button { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="SVE" class="brand-logo" onerror="this.style.display='none'" />
+      <div class="brand-text"><span class="brand-name">SVE <span class="brand-badge">B2B</span></span><span class="brand-sub">Business Portal</span></div>
+    </a>
+    <nav class="nav-links">
+      <a href="products.html">All Products</a>
+      <a href="nikolux.html">Nikolux</a>
+      <a href="lifestar.html">Life Star</a>
+      <a href="sanjivni.html" class="active" style="color:var(--blue-600); font-weight: 700;">Sanjivni</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="cart.html" class="btn-ghost cart-badge cart-nav-link" data-cart-count="0">🛒 Cart</a>
+      <a href="login.html" class="btn-primary">Login</a>
+    </div>
+  </div>
+</header>
+
+<section class="brand-hero">
+  <div class="container brand-grid">
+    <div class="brand-image">
+      <img src="https://www.sveindia.mywire.org/images/sanjivni.jpg" alt="Sanjivni Detergent" onerror="this.src='https://via.placeholder.com/600x600?text=Sanjivni'" />
+    </div>
+    <div>
+      <span class="badge" style="background:#fce7f3;color:#9d174d; margin-bottom: 12px; display: inline-block;">Herbal Brand</span>
+      <h1 class="brand-title">Sanjivni</h1>
+      <p class="brand-desc">Sanjivni Herbal Detergent Powder by Siddhi Vinayak Enterprises features a skin-friendly, herbal-based formula specially crafted for sensitive fabrics.</p>
+
+      <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 16px; color: var(--slate-700);">Select Pack Size:</h3>
+      <div class="product-list">
+
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">1 kg Pack</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹95 <small>/ pack</small></div>
+          <button class="btn-primary" onclick="addToCart('sanjivni_1kg')">Add to Cart</button>
+        </div>
+
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">2 kg Pack</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹190 <small>/ pack</small></div>
+          <button class="btn-primary" onclick="addToCart('sanjivni_2kg')">Add to Cart</button>
+        </div>
+
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">2.5 kg Pack</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹237 <small>/ pack</small></div>
+          <button class="btn-primary" onclick="addToCart('sanjivni_2.5kg')">Add to Cart</button>
+        </div>
+
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">4 kg Bag (Thela)</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹380 <small>/ bag</small></div>
+          <button class="btn-primary" onclick="addToCart('sanjivni_4kg')">Add to Cart</button>
+        </div>
+
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">5 kg Bag (Thela)</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹475 <small>/ bag</small></div>
+          <button class="btn-primary" onclick="addToCart('sanjivni_5kg')">Add to Cart</button>
+        </div>
+
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">10 kg Bag (Thela)</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹950 <small>/ bag</small></div>
+          <button class="btn-primary" onclick="addToCart('sanjivni_10kg')">Add to Cart</button>
+        </div>
+
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">20 kg Sack (Katta)</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹1900 <small>/ sack</small></div>
+          <button class="btn-primary" onclick="addToCart('sanjivni_20kg')">Add to Cart</button>
+        </div>
+
+        <div class="product-row">
+          <div class="product-info"><div class="product-size">25 kg Sack (Katta)</div><div class="product-type">✅ In Stock</div></div>
+          <div class="product-price">₹2375 <small>/ sack</small></div>
+          <button class="btn-primary" onclick="addToCart('sanjivni_25kg')">Add to Cart</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="toastBox" class="toast-box"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/cart.js"></script>
+
+<script>
+  // SECURE addToCart — price from catalog, NO login check
+  function addToCart(id) {
+    var item = window.SVE_CATALOG && window.SVE_CATALOG[id];
+    if (!item) { window.uiToast('Product not found', 'error'); return; }
+
+    window.cartAdd({
+      id: id,
+      name: item.name,
+      size: item.size,
+      price: item.price,
+      quantity: 1,
+      image: item.image,
+      unit: item.unit || 'pack'
+    });
+    window.uiToast(item.name + ' ' + item.size + ' added to cart.', 'success');
+  }
+</script>
+</body>
+</html>
