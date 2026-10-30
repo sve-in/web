@@ -102,11 +102,21 @@
     return new Promise(function (resolve) {
       const unsub = window.auth.onAuthStateChanged(async function (user) {
         unsub();
+        
+        // Check if current page is dashboard.html
+        const isDashboard = window.location.pathname.includes('dashboard');
+
         if (!user || !isAdminEmail(user.email)) {
           if (user) { try { await window.auth.signOut(); } catch (e) {} }
-          window.location.href = LOGIN_PAGE;
+          
+          // Agar dashboard page pe hai aur login nahi hai, toh login page pe bhejo
+          // Agar login page pe pehle se hai, toh kuch mat karo (infinite loop se bachne ke liye)
+          if (!window.location.pathname.includes('index.html') && window.location.pathname !== '/rdx/' && window.location.pathname !== '/rdx') {
+            window.location.href = LOGIN_PAGE;
+          }
           return;
         }
+        
         const profile = {
           uid: user.uid,
           email: user.email,
