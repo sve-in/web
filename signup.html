@@ -15,6 +15,12 @@
   .auth-head { text-align: center; margin-bottom: 28px; }
   .auth-head h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: 6px; }
   .auth-head p { color: var(--slate-500); font-size: .9rem; }
+  .divider { display: flex; align-items: center; text-align: center; color: var(--slate-400); margin: 20px 0; font-size: 0.85rem; }
+  .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--slate-200); }
+  .divider::before { margin-right: .5em; }
+  .divider::after { margin-left: .5em; }
+  .btn-google { display: flex; align-items: center; justify-content: center; gap: 10px; background: white; border: 1.5px solid var(--slate-300); color: var(--slate-700); font-weight: 600; padding: 11px; border-radius: 8px; width: 100%; transition: all 0.2s; cursor: pointer; }
+  .btn-google:hover { background: #f8fafc; border-color: var(--slate-400); }
 </style>
 </head>
 <body>
@@ -44,6 +50,14 @@
         <p>Sign up to start ordering. / खाता बनाएं।</p>
       </div>
 
+      <!-- GOOGLE SIGNUP BUTTON -->
+      <button type="button" class="btn-google" id="googleSignupBtn">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width:18px;" />
+        Sign up with Google
+      </button>
+
+      <div class="divider">or use email</div>
+
       <div class="field" style="margin-bottom:14px;">
         <label>Full Name *</label>
         <input type="text" id="suName" placeholder="e.g. Rajesh Kumar" />
@@ -51,7 +65,6 @@
       <div class="field" style="margin-bottom:14px;">
         <label>Email *</label>
         <input type="email" id="suEmail" placeholder="you@business.com" />
-        <span class="hint" style="font-size:.78rem;color:var(--slate-500);">We'll send a verification link here.</span>
       </div>
       <div class="field" style="margin-bottom:14px;">
         <label>Phone (10 digits) *</label>
@@ -71,7 +84,6 @@
           <input type="password" id="suPassword" placeholder="Min 8 chars, 1 upper, 1 number" style="padding-right:44px;" />
           <button type="button" class="pass-toggle" id="suTogglePass" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--slate-500);">👁</button>
         </div>
-        <span class="hint" id="suPwStrength" style="font-size:.78rem;color:var(--slate-500);"></span>
       </div>
       <div class="field" style="margin-bottom:14px;">
         <label>Confirm Password *</label>
@@ -88,27 +100,6 @@
       <p style="font-size:.82rem;color:var(--slate-500);text-align:center;margin-top:14px;">
         By signing up, you agree to our <a href="terms.html" style="color:var(--blue-600);">Terms</a> &amp; <a href="privacy.html" style="color:var(--blue-600);">Privacy Policy</a>.
       </p>
-    </div>
-
-    <!-- SUCCESS SCREEN -->
-    <div id="signupSuccess" style="display:none;text-align:center;padding:10px;">
-      <div style="font-size:4rem;margin-bottom:12px;">📧</div>
-      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:10px;">Verify your email</h2>
-      <p style="color:var(--slate-500);font-size:.9rem;margin-bottom:20px;">
-        We've sent a verification link to <strong id="sentEmail">your email</strong>.<br/>
-        Click the link to verify your account.
-      </p>
-      <div style="background:var(--blue-50);border-radius:var(--radius);padding:16px;margin-bottom:20px;font-size:.85rem;color:var(--blue-600);text-align:left;">
-        <strong>Next steps:</strong><br/>
-        1. Check your inbox (and spam folder)<br/>
-        2. Click the verification link<br/>
-        3. Wait for admin approval<br/>
-        4. Login and start ordering
-      </div>
-      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-        <button class="btn-outline" id="resendBtn">Resend Verification Email</button>
-        <a href="login.html" class="btn-primary">Go to Login →</a>
-      </div>
     </div>
 
     <div style="text-align:center;margin-top:22px;padding-top:22px;border-top:1px solid var(--slate-100);font-size:.88rem;color:var(--slate-500);">
@@ -128,5 +119,6 @@
 <script src="js/ui.js"></script>
 <script src="js/sheets.js"></script>
 <script src="js/signup.js"></script>
+<script src="js/google-auth.js"></script> <!-- NAYI FILE -->
 </body>
 </html>

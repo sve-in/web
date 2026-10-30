@@ -26,6 +26,12 @@
   .link-btn:hover { text-decoration: underline; }
   .login-foot { text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--slate-100); font-size: .88rem; color: var(--slate-500); }
   .login-foot a { color: var(--blue-600); font-weight: 600; }
+  .divider { display: flex; align-items: center; text-align: center; color: var(--slate-400); margin: 20px 0; font-size: 0.85rem; }
+  .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--slate-200); }
+  .divider::before { margin-right: .5em; }
+  .divider::after { margin-left: .5em; }
+  .btn-google { display: flex; align-items: center; justify-content: center; gap: 10px; background: white; border: 1.5px solid var(--slate-300); color: var(--slate-700); font-weight: 600; padding: 11px; border-radius: 8px; width: 100%; transition: all 0.2s; cursor: pointer; }
+  .btn-google:hover { background: #f8fafc; border-color: var(--slate-400); }
 </style>
 </head>
 <body>
@@ -54,6 +60,14 @@
       <p>Login to your account / अपने खाते में लॉगिन करें</p>
     </div>
 
+    <!-- GOOGLE LOGIN BUTTON -->
+    <button type="button" class="btn-google" id="googleLoginBtn">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width:18px;" />
+      Continue with Google
+    </button>
+
+    <div class="divider">or login with email</div>
+
     <form id="loginForm" novalidate>
       <div class="field">
         <label for="loginEmail">Email</label>
@@ -74,6 +88,9 @@
       </div>
 
       <div id="loginError" class="alert alert-error" hidden></div>
+      <div id="resendLinkBox" style="display:none; text-align:center; margin-bottom: 15px;">
+        <a href="verify-email.html" style="color:var(--blue-600); font-weight:600; font-size:0.9rem;">Didn't receive verification email? Resend it here →</a>
+      </div>
 
       <button type="submit" class="btn-primary btn-block btn-lg" id="loginBtn">
         <span class="btn-text">Login →</span>
@@ -98,5 +115,6 @@
 <script src="js/main.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/google-auth.js"></script> <!-- NAYI FILE -->
 </body>
 </html>
