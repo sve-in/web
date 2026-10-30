@@ -1,13 +1,12 @@
 /* ============================================================
    SVE Business Portal — Signup (Email verification flow)
-   No OTP. Firebase sends email verification link.
    ============================================================ */
 
 (function () {
   'use strict';
 
-  const form = document.getElementById('signupForm');
-  if (!form) return;
+  const formSection = document.getElementById('signupFormSection');
+  if (!formSection) return;
 
   const suErr = document.getElementById('suErr');
   const suCreateBtn = document.getElementById('suCreateBtn');
@@ -66,7 +65,7 @@
     btnText.textContent = 'Creating account…';
 
     try {
-      // 1. Create Firebase Auth user (email + password)
+      // 1. Create Firebase Auth user
       const cred = await window.auth.createUserWithEmailAndPassword(email, pw1);
       const user = cred.user;
 
@@ -85,7 +84,7 @@
         // Continue — user can resend later
       }
 
-      // 4. Save to Firestore users collection (status = pending until admin approves)
+      // 4. Save to Firestore users collection
       await window.db.collection('users').doc(user.uid).set({
         uid: user.uid,
         name: name,
@@ -100,7 +99,7 @@
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }, { merge: true });
 
-      // 5. Also add to applications collection (so admin sees in applications list)
+      // 5. Add to applications collection
       const year = new Date().getFullYear();
       const counterRef = window.db.collection('counters').doc('applications_' + year);
       const num = await window.db.runTransaction(async function (tx) {
@@ -156,11 +155,11 @@
         });
       }
 
-      // 8. Sign out — user will login after verification + admin approval
+      // 8. Sign out
       await window.auth.signOut();
 
       // 9. Show success screen
-      document.getElementById('signupForm').style.display = 'none';
+      formSection.style.display = 'none';
       document.getElementById('signupSuccess').style.display = 'block';
       document.getElementById('sentEmail').textContent = email;
 
@@ -181,18 +180,22 @@
     }
   });
 
-  // Resend verification email
+  // Resend verification email (Fixed)
   const resendBtn = document.getElementById('resendBtn');
   if (resendBtn) {
     resendBtn.addEventListener('click', async function () {
+      // We get email/password from the form inputs even though form is hidden
       const email = document.getElementById('suEmail').value.trim().toLowerCase();
       const pw = document.getElementById('suPassword').value;
+      
       if (!email || !pw) {
-        if (window.uiToast) window.uiToast('Please fill email and password again', 'error');
+        if (window.uiToast) window.uiToast('Session expired. Please sign up again.', 'error');
         return;
       }
+      
       resendBtn.disabled = true;
       resendBtn.textContent = 'Sending…';
+      
       try {
         // Re-login temporarily to resend
         const cred = await window.auth.signInWithEmailAndPassword(email, pw);
@@ -201,13 +204,14 @@
           handleCodeInApp: false
         });
         await window.auth.signOut();
-        if (window.uiToast) window.uiToast('Email resent!', 'success');
+        
+        if (window.uiToast) window.uiToast('Verification email resent successfully!', 'success');
       } catch (e) {
         console.warn(e);
-        if (window.uiToast) window.uiToast('Could not resend — try again in a minute', 'error');
+        if (window.uiToast) window.uiToast('Could not resend. Please check your network or try after some time.', 'error');
       } finally {
         resendBtn.disabled = false;
-        resendBtn.textContent = 'Resend email';
+        resendBtn.textContent = 'Resend Verification Email';
       }
     });
   }

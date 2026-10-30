@@ -1,6 +1,5 @@
 /* ============================================================
    SVE Business Portal — Apply Form
-   Fix: users doc create is best-effort, applications save is critical
    ============================================================ */
 
 (function () {
@@ -17,6 +16,7 @@
   const successSec = document.getElementById('successSection');
   const appIdVal = document.getElementById('appIdVal');
   const copyBtn = document.getElementById('copyAppId');
+  const resendBtn = document.getElementById('resendApplyBtn');
 
   const isEmail = function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || '').trim()); };
   const isPhone = function (v) { return /^[6-9]\d{9}$/.test(String(v || '').trim()); };
@@ -37,6 +37,7 @@
     const p = document.getElementById('password');
     p.type = p.type === 'password' ? 'text' : 'password';
   });
+  
   document.getElementById('password').addEventListener('input', function () {
     const v = this.value;
     let score = 0;
@@ -94,27 +95,22 @@
     btnText.textContent = 'Submitting…';
 
     let appId = null;
-    let user = null;
 
     try {
       // 1. Create Auth user
-      console.log('[Apply] Step 1: Creating auth user...');
       const cred = await window.auth.createUserWithEmailAndPassword(data.email, pw1);
-      user = cred.user;
-      console.log('[Apply] Auth user created:', user.uid);
+      const user = cred.user;
 
       try { await user.updateProfile({ displayName: data.name }); } catch (e) { console.warn('profile:', e.message); }
 
-      // 2. Send verification email (best-effort)
+      // 2. Send verification email
       try {
         await user.sendEmailVerification({ url: window.location.origin + '/login.html', handleCodeInApp: false });
-        console.log('[Apply] Verification email sent to', data.email);
       } catch (emailErr) {
         console.warn('[Apply] Verification email failed:', emailErr.message);
       }
 
       // 3. Generate App ID
-      console.log('[Apply] Step 3: Generating app ID...');
       const year = new Date().getFullYear();
       const counterRef = window.db.collection('counters').doc('applications_' + year);
       const num = await window.db.runTransaction(async function (tx) {
@@ -124,79 +120,44 @@
         return n;
       });
       appId = 'SVE-APP-' + year + '-' + String(num).padStart(4, '0');
-      console.log('[Apply] App ID:', appId);
 
-      // 4. CRITICAL — Save applications doc FIRST
-      console.log('[Apply] Step 4: Save applications doc (CRITICAL)...');
+      // 4. Save applications doc
       await window.db.collection('applications').doc(appId).set({
-        applicationId: appId,
-        uid: user.uid,
-        name: data.name,
-        phone: data.phone,
-        email: data.email,
-        businessName: data.businessName,
-        city: data.city,
-        state: data.state,
-        businessType: data.businessType,
-        gst: data.gst || '',
-        volume: data.volume,
-        message: data.message || '',
-        status: 'pending',
-        source: 'portal-apply',
-        passwordSet: true,
-        emailVerifySent: true,
+        applicationId: appId, uid: user.uid, name: data.name, phone: data.phone,
+        email: data.email, businessName: data.businessName, city: data.city,
+        state: data.state, businessType: data.businessType, gst: data.gst || '',
+        volume: data.volume, message: data.message || '', status: 'pending',
+        source: 'portal-apply', passwordSet: true, emailVerifySent: true,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      console.log('[Apply] applications doc saved ✔');
 
-      // 5. BEST-EFFORT — users doc (don't fail if rules block)
-      console.log('[Apply] Step 5: Try users doc (best-effort)...');
+      // 5. Save users doc
       try {
         await window.db.collection('users').doc(user.uid).set({
-          uid: user.uid,
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          businessName: data.businessName,
-          city: data.city,
-          state: data.state,
-          businessType: data.businessType,
-          gst: data.gst || '',
-          role: 'member',
-          status: 'pending_approval',
-          emailVerified: false,
-          signupSource: 'portal-apply',
-          applicationId: appId,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          uid: user.uid, name: data.name, email: data.email, phone: data.phone,
+          businessName: data.businessName, city: data.city, state: data.state,
+          businessType: data.businessType, gst: data.gst || '', role: 'member',
+          status: 'pending_approval', emailVerified: false, signupSource: 'portal-apply',
+          applicationId: appId, createdAt: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
-        console.log('[Apply] users doc saved ✔');
-      } catch (userErr) {
-        console.warn('[Apply] users doc failed (non-critical):', userErr.message);
-      }
+      } catch (userErr) { console.warn('[Apply] users doc failed:', userErr.message); }
 
-      // 6. BEST-EFFORT — leads
+      // 6. Save leads & sheet
       try {
         await window.db.collection('leads').add({
           name: data.name, phone: data.phone, email: data.email,
           message: 'Distributor Application: ' + data.businessName + ' (' + data.city + ')',
-          source: 'portal-apply', appId: appId,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          source: 'portal-apply', appId: appId, createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        console.log('[Apply] leads saved ✔');
-      } catch (leadErr) {
-        console.warn('[Apply] leads failed (non-critical):', leadErr.message);
-      }
+      } catch (leadErr) { console.warn('[Apply] leads failed:', leadErr.message); }
 
-      // 7. Google Sheet (fire-and-forget)
       if (window.sheetsSend) {
         window.sheetsSend('application', {
-          applicationId: appId, name: data.name, phone: data.phone,
-          email: data.email, businessName: data.businessName,
-          city: data.city, state: data.state,
-          businessType: data.businessType, gst: data.gst || '',
-          volume: data.volume, message: data.message || '',
-          status: 'pending', docFileName: ''
+          applicationId: appId, name: data.name, phone: data.phone, email: data.email,
+          businessName: data.businessName, city: data.city, state: data.state,
+          businessType: data.businessType, gst: data.gst || '', volume: data.volume,
+          message: data.message || '', status: 'pending', docFileName: ''
         });
         window.sheetsSend('lead', {
           name: data.name, phone: data.phone, email: data.email,
@@ -239,6 +200,7 @@
     }
   });
 
+  // Copy ID logic
   if (copyBtn) copyBtn.addEventListener('click', function () {
     const id = appIdVal.textContent;
     if (!id || id === '—') return;
@@ -247,5 +209,39 @@
       setTimeout(function () { copyBtn.textContent = '📋 Copy ID'; }, 2000);
     });
   });
+
+  // 🟢 RESEND APPLY EMAIL LOGIC
+  if (resendBtn) {
+    resendBtn.addEventListener('click', async function () {
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const pw = document.getElementById('password').value;
+      
+      if (!email || !pw) {
+        if (window.uiToast) window.uiToast('Please refresh the page and apply again.', 'error');
+        return;
+      }
+      
+      resendBtn.disabled = true;
+      resendBtn.textContent = 'Sending…';
+      
+      try {
+        // Re-login temporarily to resend email
+        const cred = await window.auth.signInWithEmailAndPassword(email, pw);
+        await cred.user.sendEmailVerification({
+          url: window.location.origin + '/login.html',
+          handleCodeInApp: false
+        });
+        await window.auth.signOut(); // Logout immediately
+        
+        if (window.uiToast) window.uiToast('Verification email resent successfully!', 'success');
+      } catch (e) {
+        console.warn('Resend error:', e);
+        if (window.uiToast) window.uiToast('Could not resend. Please check network or try later.', 'error');
+      } finally {
+        resendBtn.disabled = false;
+        resendBtn.textContent = 'Resend Verification Email';
+      }
+    });
+  }
 
 })();

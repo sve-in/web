@@ -185,6 +185,7 @@
           <div class="app-id-val" id="appIdVal">—</div>
           <button class="btn-outline copy-btn" id="copyAppId">📋 Copy ID</button>
         </div>
+        
         <div style="background:var(--blue-50);border-radius:var(--radius);padding:16px;margin-bottom:20px;font-size:.85rem;color:var(--blue-600);text-align:left;">
           <strong>Next steps:</strong><br/>
           1. Check your email inbox (and spam folder)<br/>
@@ -192,9 +193,15 @@
           3. Wait for admin approval<br/>
           4. Login and start ordering
         </div>
-        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap; margin-bottom: 24px;">
+          <!-- RESEND BUTTON ADDED HERE -->
+          <button class="btn-outline" id="resendApplyBtn">Resend Verification Email</button>
           <a href="apply-status.html" class="btn-primary">Check Status →</a>
-          <a href="index.html" class="btn-outline">Back to Home</a>
+        </div>
+        
+        <div>
+          <a href="index.html" class="btn-ghost">Back to Home</a>
         </div>
       </div>
 

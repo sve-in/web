@@ -1,0 +1,17 @@
+<script>
+  // Show resend link if error mentions verify
+  document.addEventListener('DOMContentLoaded', function() {
+    const errBox = document.getElementById('loginError');
+    const resendBox = document.getElementById('resendLinkBox');
+    if (errBox && resendBox) {
+      const observer = new MutationObserver(function() {
+        if (!errBox.hidden && errBox.textContent.toLowerCase().includes('verify')) {
+          resendBox.style.display = 'block';
+        } else {
+          resendBox.style.display = 'none';
+        }
+      });
+      observer.observe(errBox, { attributes: true, childList: true, characterData: true });
+    }
+  });
+</script>
