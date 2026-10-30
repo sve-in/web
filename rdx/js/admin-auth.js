@@ -1,7 +1,5 @@
 /* ============================================================
    SVE Admin Panel — Auth Guard (Google-only)
-   Only 2 hardcoded admin emails allowed.
-   Uses Google Sign-In popup — no password needed.
    ============================================================ */
 
 (function () {
@@ -28,15 +26,15 @@
     const btnText = googleBtn.querySelector('.btn-text');
     const spinner = googleBtn.querySelector('.btn-spinner');
 
-    function showErr(m)  { errBox.textContent = m; errBox.hidden = false; infoBox.hidden = true; }
-    function showInfo(m) { infoBox.textContent = m; infoBox.hidden = false; errBox.hidden = true; }
+    function showErr(m)  { if(errBox){ errBox.textContent = m; errBox.hidden = false; } if(infoBox) infoBox.hidden = true; }
+    function showInfo(m) { if(infoBox){ infoBox.textContent = m; infoBox.hidden = false; } if(errBox) errBox.hidden = true; }
 
     googleBtn.addEventListener('click', async function () {
-      errBox.hidden = true;
-      infoBox.hidden = true;
+      if(errBox) errBox.hidden = true;
+      if(infoBox) infoBox.hidden = true;
       googleBtn.disabled = true;
-      spinner.hidden = false;
-      btnText.textContent = 'Signing in…';
+      if(spinner) spinner.hidden = false;
+      if(btnText) btnText.textContent = 'Signing in…';
 
       try {
         const provider = new firebase.auth.GoogleAuthProvider();
@@ -46,21 +44,18 @@
         const user = result.user;
         const email = (user.email || '').toLowerCase().trim();
 
-        // 1. Must be one of the allowed admin emails
         if (!isAdminEmail(email)) {
           await window.auth.signOut();
-          showErr('Access denied. This Google account is not an SVE admin. / यह Google खाता SVE एडमिन नहीं है।');
+          showErr('Access denied. This Google account is not an SVE admin.');
           return;
         }
 
-        // 2. Must have verified email (Google always does, but double-check)
         if (!user.emailVerified) {
           await window.auth.signOut();
           showErr('Google email not verified. Please verify and try again.');
           return;
         }
 
-        // 3. Save session flag
         try { sessionStorage.setItem('sve_admin', email); } catch (e2) {}
 
         if (window.adminToast) window.adminToast('Welcome, admin!', 'success');
@@ -68,28 +63,19 @@
 
       } catch (err) {
         console.error('[Admin Google Auth]', err);
-        let msg = 'Sign-in failed. Please try again. / साइन-इन विफल।';
-
-        if (err.code === 'auth/popup-closed-by-user') {
-          msg = 'Sign-in cancelled. Please try again. / साइन-इन रद्द।';
-        } else if (err.code === 'auth/popup-blocked') {
-          msg = 'Popup blocked by browser. Please allow popups and retry. / पॉपअप ब्लॉक है।';
-        } else if (err.code === 'auth/network-request-failed') {
-          msg = 'Network error. Check your internet connection.';
-        } else if (err.code === 'auth/unauthorized-domain') {
-          msg = 'This domain is not authorized in Firebase Console. Add it under Authentication → Settings → Authorized domains.';
-        } else if (err.code === 'auth/operation-not-allowed') {
-          msg = 'Google sign-in is not enabled in Firebase Console. Enable it under Authentication → Sign-in method.';
-        }
+        let msg = 'Sign-in failed. Please try again.';
+        if (err.code === 'auth/popup-closed-by-user') msg = 'Sign-in cancelled.';
+        else if (err.code === 'auth/popup-blocked') msg = 'Popup blocked. Please allow popups.';
+        else if (err.code === 'auth/unauthorized-domain') msg = 'Domain not authorized in Firebase Console.';
         showErr(msg);
       } finally {
         googleBtn.disabled = false;
-        spinner.hidden = true;
-        btnText.textContent = 'Sign in with Google';
+        if(spinner) spinner.hidden = true;
+        if(btnText) btnText.textContent = 'Sign in with Google';
       }
     });
 
-    // If already logged in as admin → skip login page
+    // Login page check: If already logged in, redirect to dashboard
     window.auth.onAuthStateChanged(function (user) {
       if (user && isAdminEmail(user.email)) {
         window.location.href = DASHBOARD_PAGE;
@@ -97,26 +83,29 @@
     });
   }
 
-  /* ---------- GUARD FOR ADMIN PAGES ---------- */
+  /* ---------- GUARD FOR ADMIN PAGES (FIXED) ---------- */
   window.requireAdmin = function (callback) {
     return new Promise(function (resolve) {
+      // isAuthResolved flag ensures we don't redirect while Firebase is still checking
+      let isAuthResolved = false;
+
       const unsub = window.auth.onAuthStateChanged(async function (user) {
-        unsub();
-        
-        // Check if current page is dashboard.html
-        const isDashboard = window.location.pathname.includes('dashboard');
+        // Agar pehle se check ho chuka hai, toh wapas mat karo
+        if (isAuthResolved) return; 
+        isAuthResolved = true;
+        unsub(); // Stop listening further
 
         if (!user || !isAdminEmail(user.email)) {
           if (user) { try { await window.auth.signOut(); } catch (e) {} }
           
-          // Agar dashboard page pe hai aur login nahi hai, toh login page pe bhejo
-          // Agar login page pe pehle se hai, toh kuch mat karo (infinite loop se bachne ke liye)
-          if (!window.location.pathname.includes('index.html') && window.location.pathname !== '/rdx/' && window.location.pathname !== '/rdx') {
+          // Check if we are already on the login page to prevent infinite loop
+          if (!window.location.pathname.includes('index.html')) {
             window.location.href = LOGIN_PAGE;
           }
           return;
         }
         
+        // Success: User is authorized
         const profile = {
           uid: user.uid,
           email: user.email,
@@ -166,17 +155,15 @@
       });
     }
 
-    // Highlight current nav
     const path = window.location.pathname.split('/').pop() || 'dashboard.html';
     document.querySelectorAll('.admin-nav a').forEach(function (a) {
       const href = a.getAttribute('href');
       if (href === path) a.classList.add('active');
     });
 
-    // Logout buttons
     document.querySelectorAll('[data-logout]').forEach(function (b) {
       b.addEventListener('click', function () {
-        if (confirm('Logout from admin panel? / लॉगआउट?')) window.adminLogout();
+        if (confirm('Logout from admin panel?')) window.adminLogout();
       });
     });
   });
